@@ -3,6 +3,8 @@
 int	main(int argc, char **argv)
 {
     t_config config;
+
+    // config = malloc(siz)
 	if (argc != 9)
 	{
 		fprintf(stderr, "Usage: ./codexion num_coders time_to_burnout "
@@ -11,10 +13,10 @@ int	main(int argc, char **argv)
 	}
     int *result;
 
-    if (!parsing(argv + 1, &config))
-        fprintf(stderr, "wrong type of data entred, please recheck your input");
+    if (!parsing(argv, &config))
+    {
+        fprintf(stderr, "wrong type of data entred, please recheck your input: \n");
         return (1);
-    printf("sucsses");
-    
+    }    
 
 }

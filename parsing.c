@@ -1,4 +1,5 @@
 #include "codexion.h"
+
 bool parsing(char **argv,t_config *config)
 {
     long result;
@@ -37,13 +38,18 @@ bool parsing(char **argv,t_config *config)
         printf("compiles_required should be a positiv int");
         return(false);
     }
+    if (tmp > INT_MAX)
+    {
+        printf("compiles_required should be a valid positiv int");
+        return (false);
+    }
     config->compiles_required = (int)tmp;
     if (!ft_parse_positive_field(argv[7], 0, &config->dongle_cooldown))
     {
         printf("dongle_cooldown should be a positiv int");
         return(false);
     }
-    if(!ft_parse_scheduler(argv[9], &config->scheduler))
+    if(ft_parse_scheduler(argv[9], &config->scheduler))
     {
         fprintf(stderr, "invalid scheduler (must be fifo or edf)");
         return (false);
