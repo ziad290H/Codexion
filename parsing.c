@@ -2,7 +2,6 @@
 
 bool parsing(char **argv,t_config *config)
 {
-    long result;
 
     long tmp;
 
