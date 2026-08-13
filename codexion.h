@@ -12,6 +12,8 @@
 # include <sys/time.h>
 # include <unistd.h>
 #include <unistd.h>
+#include <sys/time.h>
+
 
 typedef struct s_config
 {
@@ -63,5 +65,6 @@ typedef struct s_sim
 bool    parsing(char **arg,t_config *config);
 bool	ft_parse_scheduler(const char *str, int *out_sched);
 bool	ft_parse_positive_field(const char *str, long min_val, long *out);
+long elapsed_ms(t_sim *sim);
 
 #endif
