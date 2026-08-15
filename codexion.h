@@ -69,4 +69,8 @@ long elapsed_ms(t_sim *sim);
 long get_timesstamp_ms(void);
 bool init_sim(t_sim *sim, t_config *cfg);
 
+void acquire_dognle(t_sim *sim, t_dongle *d, int coder_id);
+void release_dongle(t_sim *sim, t_dongle *d);
+void log_state(t_sim *sim, int coder_id,const char *msg);
+
 #endif
