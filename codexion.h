@@ -67,5 +67,6 @@ bool	ft_parse_scheduler(const char *str, int *out_sched);
 bool	ft_parse_positive_field(const char *str, long min_val, long *out);
 long elapsed_ms(t_sim *sim);
 long get_timesstamp_ms(void);
+bool init_sim(t_sim *sim, t_config *cfg);
 
 #endif

@@ -46,9 +46,9 @@ void release_dongle(t_sim *sim, t_dongle *d)
        d->in_use= false;
     // adding the time for now + time to cooldown 
        d->available_at_ms = elapsed_ms(sim) + sim->cfg.dongle_cooldown;
-       pthread_mutex_unlock(&d->lock);
        pthread_cond_broadcast(&d->cond);
+       pthread_mutex_unlock(&d->lock);
        return;
     }
-    pthread_mutex_unlock
+    pthread_mutex_unlock(&d->lock);
 }
