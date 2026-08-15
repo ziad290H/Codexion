@@ -1,4 +1,4 @@
-NAME = ziad
+NAME = ./codexion
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g

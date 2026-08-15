@@ -8,8 +8,12 @@ void log_state(t_sim *sim, int coder_id,const char *msg)
     pthread_mutex_lock(&sim->state_lock);
     if (sim->stop)
     {
-        pthread_mutex_unlock(&sim->log_lock);
+        if (strcmp(msg, "burned out") == 0)
+            printf("%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
+        // claude said it should revesre the order of how i locked them with how i
+        // will unlocked them , idk why ?
         pthread_mutex_unlock(&sim->state_lock);
+        pthread_mutex_unlock(&sim->log_lock);
         return;
     }
     pthread_mutex_unlock(&sim->state_lock);

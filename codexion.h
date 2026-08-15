@@ -73,4 +73,8 @@ void acquire_dognle(t_sim *sim, t_dongle *d, int coder_id);
 void release_dongle(t_sim *sim, t_dongle *d);
 void log_state(t_sim *sim, int coder_id,const char *msg);
 
+void	*monitor_routine(void *arg);
+void	*coder_routine(void *arg);
+
+
 #endif
