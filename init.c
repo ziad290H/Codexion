@@ -33,7 +33,7 @@ bool init_coders(t_sim *sim)
 	i = 0;
 	while (i < sim->cfg.num_coders)
 	{
-		sim->coders[i].id = 0 + 1;
+		sim->coders[i].id = i + 1;
 		sim->coders[i].compiles_done = 0;
 		sim->coders[i].last_compile_start = 0;
 		sim->coders[i].sim = sim;
@@ -53,6 +53,7 @@ bool init_sim(t_sim *sim, t_config *cfg)
 	sim->start_time_ms = get_timesstamp_ms();
 	sim->dongles = NULL;
 	sim->coders = NULL;
+
 	if (pthread_mutex_init(&sim->log_lock, NULL) != 0)
 		return (false);
 	if (pthread_mutex_init(&sim->state_lock, NULL) != 0)

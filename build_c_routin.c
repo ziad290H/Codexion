@@ -1,34 +1,27 @@
 #include "codexion.h"
 
-void *coder_routine(void *arg)
-{
-    t_coder *c;
-    t_sim *s;
-    // you mean here treat this adress of arg as a pointer to t_coder
-    c = (t_coder *)arg;
-    s = c->sim;
-
-    while (!is_stoped(s))
-    {
-        if(!do_compile(s, c));
-            break;
-    }
-}
 bool    do_compile(t_sim *sim, t_coder *c)
 {
     if (c->left == c->right)
+    {
+        fprintf(stdout, " dongle left == dongle right\n");
         return (false);
+    }
     if (is_stoped(sim))
         return (false);
     // dead lock avoidance , the way we distrubute what coders take first
     if (c->id % 2 == 0)
     {
+        fprintf(stdout, "coder %d trying to take right\n", c->id);
         acquire_dognle(sim, c->right, c->id);
+        fprintf(stdout, "coder %d trying to take left\n", c->id);
         acquire_dognle(sim, c->left, c->id);
     }
     else
     {
+        fprintf(stdout, "coder %d trying to take left\n", c->id);
         acquire_dognle(sim, c->left, c->id);
+        fprintf(stdout, "coder %d trying to take right\n", c->id);
         acquire_dognle(sim, c->right, c->id);
     }
     pthread_mutex_lock(&sim->state_lock);
@@ -40,9 +33,9 @@ bool    do_compile(t_sim *sim, t_coder *c)
     // multiply by 1000 to convert time_to_complie from miliseceds to microsecends
     usleep(sim->cfg.time_to_compile * 1000);
     // end of compiling 
+    fprintf(stdout, "the coder %d trying to relleased dognle\n", c->id);
     release_dongle(sim , c-> right);
     release_dongle(sim , c-> left);
-
     pthread_mutex_lock(&sim->state_lock);
     c->compiles_done += 1;
     pthread_mutex_unlock(&sim->state_lock);
@@ -57,4 +50,29 @@ bool is_stoped(t_sim *sim)
     val = sim->stop;
     pthread_mutex_unlock(&sim->state_lock);
     return(val);
+}
+
+void *coder_routine(void *arg)
+{
+    t_coder *c;
+    t_sim *s;
+    // you mean here treat this adress of arg as a pointer to t_coder
+    c = (t_coder *)arg;
+    s = c->sim;
+
+    while (!is_stoped(s))
+    {
+        if(!do_compile(s, c))
+            return (void *)1;
+        fprintf(stdout, "\n\npahse 2 debugging");
+        log_state(s, c->id, "is debugging");
+        usleep(s->cfg.time_to_debug * 1000);
+        if (is_stoped(s))
+            break;
+        fprintf(stdout, "\n\n refactoring");
+        log_state(s, c->id, "is refactoring");
+        usleep(s->cfg.time_to_refactor * 1000);
+    }
+
+    return (NULL);
 }

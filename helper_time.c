@@ -16,11 +16,11 @@ long elapsed_ms(t_sim *sim)
     return (get_timesstamp_ms() - sim->start_time_ms);
 }
 
-int main()
-{
-    long start = get_timesstamp_ms();
-    printf(" start : %ld, ", start);
-}
+// int main()
+// {
+//     long start = get_timesstamp_ms();
+//     printf(" start : %ld, ", start);
+// }
 // int main()
 // {
 //     long start = get_timesstamp_ms();

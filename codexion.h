@@ -69,11 +69,16 @@ long elapsed_ms(t_sim *sim);
 long get_timesstamp_ms(void);
 bool init_sim(t_sim *sim, t_config *cfg);
 
+bool is_stoped(t_sim *sim);
+
 void acquire_dognle(t_sim *sim, t_dongle *d, int coder_id);
 void release_dongle(t_sim *sim, t_dongle *d);
 void log_state(t_sim *sim, int coder_id,const char *msg);
 
 void	*monitor_routine(void *arg);
+bool    check_burnout(t_sim *sim);
+bool    check_all_compiled(t_sim *sim);
+
 void	*coder_routine(void *arg);
 
 

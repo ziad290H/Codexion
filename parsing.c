@@ -10,7 +10,7 @@ bool parsing(char **argv,t_config *config)
         fprintf(stderr, "number_of_coders should be positiv int");
         return (false);
     }
-    config->scheduler = (int)tmp;
+    config->num_coders = (int)tmp;
     
     if(!ft_parse_positive_field(argv[2], 0, &config->time_to_burnout))
     {
@@ -48,9 +48,9 @@ bool parsing(char **argv,t_config *config)
         printf("dongle_cooldown should be a positiv int");
         return(false);
     }
-    if(ft_parse_scheduler(argv[9], &config->scheduler))
+    if(!ft_parse_scheduler(argv[8], &config->scheduler))
     {
-        fprintf(stderr, "invalid scheduler (must be fifo or edf)");
+        fprintf(stderr, "invalid scheduler (must be fifo or edf) you entred : %s\n", argv[8]);
         return (false);
     }
     return (true);

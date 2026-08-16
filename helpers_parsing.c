@@ -21,6 +21,9 @@ bool ft_atoi(const char *str, long *out)
         i++;
     }
     *out = result;
+	fprintf(stderr, "we used atoi\n");
+	fprintf(stderr, "*out = %ld\n", *out);
+
     return (true);
 }
 
