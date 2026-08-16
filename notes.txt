@@ -3,3 +3,7 @@ deadlocks
 multithreading
 recources:
 https://www.geeksforgeeks.org/operating-systems/difference-between-process-and-thread/
+
+
+
+ i have a problem on how to wake the thread is sleeping , (claude work with a new fucntion timedwait)
