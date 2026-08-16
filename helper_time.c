@@ -16,6 +16,34 @@ long elapsed_ms(t_sim *sim)
     return (get_timesstamp_ms() - sim->start_time_ms);
 }
 
+void	wait_for_dongle(t_sim *sim, t_dongle *d)
+{
+	long			remaining_ms;
+	struct timeval	now;
+	struct timespec	deadline;
+
+	// how much cooldown time is left, in ms (from your sim's relative clock)
+	remaining_ms = d->available_at_ms - elapsed_ms(sim);
+	if (remaining_ms < 0)
+		remaining_ms = 0;
+
+	// get real wall-clock "now"
+	gettimeofday(&now, NULL);
+
+	// deadline = real now + remaining cooldown, converted to timespec
+	deadline.tv_sec = now.tv_sec + (remaining_ms / 1000); //  this represent secodns
+	deadline.tv_nsec = (now.tv_usec * 1000L) + ((remaining_ms % 1000) * 1000000L); // this repressent nanoseceonds
+
+	// handle nanosecond overflow (must stay < 1,000,000,000)
+	if (deadline.tv_nsec >= 1000000000L)
+	{
+		deadline.tv_sec += 1;
+		deadline.tv_nsec -= 1000000000L;
+	}
+    fprintf(stdout, "deadline : %ld", deadline.tv_sec);
+	pthread_cond_timedwait(&d->cond, &d->lock, &deadline);
+}
+
 // int main()
 // {
 //     long start = get_timesstamp_ms();

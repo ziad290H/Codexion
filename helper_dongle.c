@@ -30,19 +30,27 @@ void acquire_dognle(t_sim *sim, t_dongle *d, int coder_id)
 // we lock the dongle and mutex soo we can not be falling in the race-condition (another coder change it statue)
     pthread_mutex_lock(&d->lock);
     now = elapsed_ms(sim);
+    //  int i = 0;
     while (d->in_use || now < d->available_at_ms)
     {
         // one or more thread will be sleeping waiting for the cond
         fprintf(stdout, "coder %d waiiting to dongle to be available\n", coder_id);
-        pthread_cond_wait(&d->cond, &d->lock);
-        fprintf(stdout, "dongel avalable in  %ld \n", d->available_at_ms);
+        wait_for_dongle(sim, d);
+        fprintf(stdout, "dongel available in  %ld \n", d->available_at_ms);
         fprintf(stdout, "in use : %d\n\n", d->in_use);
         now = elapsed_ms(sim);
-        fprintf(stdout, "now : %ld", now);
+        fprintf(stdout, "now : %ld\n", now);
+        //if (i == 100)
+        //{
+        //    fprintf(stdout, "reached max loops");
+        //    exit(1);
+        //}
+        //i++;
     }
     fprintf(stdout, "dongle avalilable !!\n");
     d -> in_use = true;
     pthread_mutex_unlock(&d->lock);
+    fprintf(stdout, "unlocked");
     log_state(sim, coder_id, "has taken a dognle");
 
 }
@@ -52,11 +60,14 @@ void release_dongle(t_sim *sim, t_dongle *d)
     pthread_mutex_lock(&d->lock);
     if (d->in_use)
     {
-       d->in_use= false;
-    // adding the time for now + time to cooldown 
-       d->available_at_ms = elapsed_ms(sim) + sim->cfg.dongle_cooldown;
-       fprintf(stdout, "the dongle is available at %ld\n signlaed the sleepeing thread! \n", d->available_at_ms);
-       pthread_cond_broadcast(&d->cond);
+        d->in_use= false;
+        // adding the time for now + time to cooldown
+        d->available_at_ms = elapsed_ms(sim) + sim->cfg.dongle_cooldown;
+        //fprintf(stdout, "elapsed_ms(sim) : %ld + %ld \n\n", elapsed_ms(sim), sim->cfg.dongle_cooldown);
+        //fprintf(stdout, "\n\available at cooldown = %ld $$$$$$$$$$$$$$$$$$$$", d->available_at_ms);
+       fprintf(stdout, "the dongle is available at %ld\n", d->available_at_ms);
+       // return this, i only delet it beceaus of test
+       // pthread_cond_broadcast(&d->cond);
        pthread_mutex_unlock(&d->lock);
        return;
     }
