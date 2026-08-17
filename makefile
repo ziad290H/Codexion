@@ -1,7 +1,7 @@
 NAME = ./codexion
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+#CFLAGS = -Wall -Wextra -Werror -g
 
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)

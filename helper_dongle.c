@@ -17,7 +17,7 @@ void log_state(t_sim *sim, int coder_id,const char *msg)
         return;
     }
     pthread_mutex_unlock(&sim->state_lock);
-    printf("%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
+    fprintf(stdout, "%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
 // now we unlock the log_lock if any thred wants to write to it
     pthread_mutex_unlock(&sim->log_lock);
 } 
@@ -29,17 +29,18 @@ void acquire_dognle(t_sim *sim, t_dongle *d, int coder_id)
 //  we lock a dongle when a want to change the metadata of it (is_use, available_at)
 // we lock the dongle and mutex soo we can not be falling in the race-condition (another coder change it statue)
     pthread_mutex_lock(&d->lock);
+    //fprintf(stdout, "coder %d  lock it ", coder_id);
     now = elapsed_ms(sim);
     //  int i = 0;
     while (d->in_use || now < d->available_at_ms)
     {
         // one or more thread will be sleeping waiting for the cond
-        fprintf(stdout, "coder %d waiiting to dongle to be available\n", coder_id);
+        //fprintf(stdout, "coder %d waiiting to dongle to be available\n", coder_id);
         wait_for_dongle(sim, d);
-        fprintf(stdout, "dongel available in  %ld \n", d->available_at_ms);
-        fprintf(stdout, "in use : %d\n\n", d->in_use);
+        //fprintf(stdout, "\ndongel available in  %ld \n", d->available_at_ms);
+        //fprintf(stdout, "in use : %d\n\n", d->in_use);
         now = elapsed_ms(sim);
-        fprintf(stdout, "now : %ld\n", now);
+        //fprintf(stdout, "\n time now : %ld\n", now);
         //if (i == 100)
         //{
         //    fprintf(stdout, "reached max loops");
@@ -47,10 +48,19 @@ void acquire_dognle(t_sim *sim, t_dongle *d, int coder_id)
         //}
         //i++;
     }
-    fprintf(stdout, "dongle avalilable !!\n");
+    //fprintf(stdout, "dongle avalilable !!\n");
     d -> in_use = true;
+    // if (pthread_mutex_trylock(&d->lock) == 0)
+    // {
+    //     printf("UNLOCKED\n");
+    //     pthread_mutex_unlock(&d->lock);
+    // }
+    // else
+    // {
+    //     printf("LOCKED (or unavailable)\n");
+    // }
     pthread_mutex_unlock(&d->lock);
-    fprintf(stdout, "unlocked");
+    //fprintf(stdout, "unlocked");
     log_state(sim, coder_id, "has taken a dognle");
 
 }
@@ -65,7 +75,7 @@ void release_dongle(t_sim *sim, t_dongle *d)
         d->available_at_ms = elapsed_ms(sim) + sim->cfg.dongle_cooldown;
         //fprintf(stdout, "elapsed_ms(sim) : %ld + %ld \n\n", elapsed_ms(sim), sim->cfg.dongle_cooldown);
         //fprintf(stdout, "\n\available at cooldown = %ld $$$$$$$$$$$$$$$$$$$$", d->available_at_ms);
-       fprintf(stdout, "the dongle is available at %ld\n", d->available_at_ms);
+       //fprintf(stdout, "the dongle is available at %ld\n", d->available_at_ms);
        // return this, i only delet it beceaus of test
        // pthread_cond_broadcast(&d->cond);
        pthread_mutex_unlock(&d->lock);

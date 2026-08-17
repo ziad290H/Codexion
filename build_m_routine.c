@@ -52,12 +52,14 @@ bool    check_all_compiled(t_sim *sim)
     target = sim->cfg.compiles_required;
     while (i < sim->cfg.num_coders)
     {
-        if (!(target >= sim->coders[i].compiles_done))
+        if (target > sim->coders[i].compiles_done)
         {
             pthread_mutex_unlock(&sim->state_lock);
             return (false);
         }
+		i++;
     }
+	pthread_mutex_unlock(&sim->state_lock);
     sim->stop = true;
     return (true);
 }

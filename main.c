@@ -46,6 +46,7 @@ int	main(int argc, char **argv)
 		return(1);
 	}
 	i = 0;
+	fprintf(stdout, "\033[31mERROR: WEE ARE MONITOR\033[0m\n");
 	while (i < sim.cfg.num_coders)
 	{
 		pthread_join(sim.coders[i].thread, &result);
@@ -57,6 +58,9 @@ int	main(int argc, char **argv)
 		i++;
 	}
 	pthread_join(monitor_tid, NULL);
+	i=0;
+	while(i < sim.cfg.num_coders)
+		printf("%d\n", sim.coders[i++].compiles_done);
 
 	//destroy_sim(&sim);
 	return (0);

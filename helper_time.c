@@ -13,6 +13,7 @@ long get_timesstamp_ms(void)
 
 long elapsed_ms(t_sim *sim)
 {
+	//fprintf(stdout, "sim->start_time_ms) = %ld", sim->start_time_ms);
     return (get_timesstamp_ms() - sim->start_time_ms);
 }
 
@@ -40,7 +41,7 @@ void	wait_for_dongle(t_sim *sim, t_dongle *d)
 		deadline.tv_sec += 1;
 		deadline.tv_nsec -= 1000000000L;
 	}
-    fprintf(stdout, "deadline : %ld", deadline.tv_sec);
+    //fprintf(stdout, "deadline : %ld", deadline.tv_sec);
 	pthread_cond_timedwait(&d->cond, &d->lock, &deadline);
 }
 
