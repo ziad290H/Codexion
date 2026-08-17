@@ -25,6 +25,7 @@ void	wait_for_dongle(t_sim *sim, t_dongle *d)
 
 	// how much cooldown time is left, in ms (from your sim's relative clock)
 	remaining_ms = d->available_at_ms - elapsed_ms(sim);
+	//printf("remaining_ms : %ld", remaining_ms);
 	if (remaining_ms < 0)
 		remaining_ms = 0;
 

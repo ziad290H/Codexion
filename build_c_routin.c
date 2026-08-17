@@ -37,10 +37,14 @@ bool    do_compile(t_sim *sim, t_coder *c)
     release_dongle(sim , c-> right);
     release_dongle(sim , c-> left);
     //fprintf(stdout, "\nthe coder %d finished comlipe\n", c->id);
-    pthread_mutex_lock(&sim->state_lock);
     //fprintf(stdout, "\nthe coder %d locked state\n", c->id);
-    c->compiles_done += 1;
-    pthread_mutex_unlock(&sim->state_lock);
+    if (!(is_stoped(sim)))
+    {
+        // this condition is to prevent to add +1 compilation on a stopped sumulation
+        pthread_mutex_lock(&sim->state_lock);
+        c->compiles_done += 1;
+        pthread_mutex_unlock(&sim->state_lock);
+    }
     return (true);
 }
 

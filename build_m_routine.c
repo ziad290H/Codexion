@@ -23,9 +23,9 @@ bool    check_burnout(t_sim *sim)
     long    deadline;
 
     i = 0;
+    pthread_mutex_lock(&sim->state_lock);
     while (i < sim->cfg.num_coders)
     {
-        pthread_mutex_lock(&sim->state_lock);
         now = elapsed_ms(sim);
         deadline = sim->coders[i].last_compile_start + sim->cfg.time_to_burnout;
         if (now > deadline)
@@ -36,9 +36,9 @@ bool    check_burnout(t_sim *sim)
             log_state(sim, sim->coders[i].id, "burned out");
             return (true);
         }
-        pthread_mutex_unlock(&sim->state_lock);
         i++;
     }
+    pthread_mutex_unlock(&sim->state_lock);
     return (false);
 }
 
@@ -59,7 +59,9 @@ bool    check_all_compiled(t_sim *sim)
         }
 		i++;
     }
-	pthread_mutex_unlock(&sim->state_lock);
+	fprintf(stdout, "\n we are out at %d\n",  sim->coders[0].compiles_done);
+	fprintf(stdout, "\n we are out at %d\n",  sim->coders[0].compiles_done);
     sim->stop = true;
+	pthread_mutex_unlock(&sim->state_lock);
     return (true);
 }

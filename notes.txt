@@ -7,3 +7,4 @@ https://www.geeksforgeeks.org/operating-systems/difference-between-process-and-t
 dibaar is notion page : https://daibbarcom.notion.site/codexion
 
  i have a problem on how to wake the thread is sleeping , (claude work with a new fucntion timedwait)
+ !\\\\\\i have a problem in the simualtion when do i should waoke the condition 

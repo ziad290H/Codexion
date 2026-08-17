@@ -14,19 +14,18 @@ int	main(int argc, char **argv)
 			"time_to_compile time_to_debug time_to_refactor "
 			"num_compiles dongle_cooldown scheduler(fifo|edf)\n");
 	}
-	printf(" argv[0] : %s\n\n", argv[8]);
 
     if (!parsing(argv, &config))
     {
         fprintf(stderr, "wrong type of data entred, please recheck your input: \n");
         return (1);
     }
+
 	if (!init_sim(&sim, &config))
 	{
 		fprintf(stderr, "init failed\n");
 		return(1);
 	}
-	// printf(" one thread created");
     i = 0;
     while(i < sim.cfg.num_coders)
     {
@@ -38,7 +37,6 @@ int	main(int argc, char **argv)
 		}
         i++;
     }
-	fprintf(stderr, "thread creation sucess\n i: %d\n\n", i);
 	if (pthread_create(&monitor_tid, NULL, monitor_routine, &sim) != 0)
 	{
 		fprintf(stderr, "monitor creation failed\n");
@@ -46,7 +44,6 @@ int	main(int argc, char **argv)
 		return(1);
 	}
 	i = 0;
-	fprintf(stdout, "\033[31mERROR: WEE ARE MONITOR\033[0m\n");
 	while (i < sim.cfg.num_coders)
 	{
 		pthread_join(sim.coders[i].thread, &result);
@@ -58,9 +55,8 @@ int	main(int argc, char **argv)
 		i++;
 	}
 	pthread_join(monitor_tid, NULL);
-	i=0;
-	while(i < sim.cfg.num_coders)
-		printf("%d\n", sim.coders[i++].compiles_done);
+	printf("%d\n", sim.coders[1].compiles_done);
+	printf("%d\n", sim.coders[0].compiles_done);
 
 	//destroy_sim(&sim);
 	return (0);
