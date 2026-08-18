@@ -10,7 +10,15 @@ bool parsing(char **argv,t_config *config)
         fprintf(stderr, "number_of_coders should be positiv int");
         return (false);
     }
+    if (tmp >  INT_MAX)
+    {
+        printf("number of coders should not exceed the range INT_MAX\n");
+        return (false);
+    }
     config->num_coders = (int)tmp;
+
+    printf("number of coders = : %ld\n", tmp);
+    printf("number of coders = : %d", config->num_coders);
     
     if(!ft_parse_positive_field(argv[2], 0, &config->time_to_burnout))
     {

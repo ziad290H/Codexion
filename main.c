@@ -13,14 +13,11 @@ int	main(int argc, char **argv)
 		fprintf(stderr, "Usage: ./codexion num_coders time_to_burnout "
 			"time_to_compile time_to_debug time_to_refactor "
 			"num_compiles dongle_cooldown scheduler(fifo|edf)\n");
+		return (1);
 	}
 
     if (!parsing(argv, &config))
-    {
-        fprintf(stderr, "wrong type of data entred, please recheck your input: \n");
         return (1);
-    }
-
 	if (!init_sim(&sim, &config))
 	{
 		fprintf(stderr, "init failed\n");
@@ -32,7 +29,7 @@ int	main(int argc, char **argv)
         if (pthread_create(&sim.coders[i].thread, NULL, coder_routine, &sim.coders[i]) != 0)
 		{
 			fprintf(stderr, "thread creation failed\n");
-			//destroy_sim(&sim);
+			destroy_sim(&sim);
 			return(1);
 		}
         i++;
@@ -40,7 +37,7 @@ int	main(int argc, char **argv)
 	if (pthread_create(&monitor_tid, NULL, monitor_routine, &sim) != 0)
 	{
 		fprintf(stderr, "monitor creation failed\n");
-		//destroy_sim(&sim);
+		destroy_sim(&sim);
 		return(1);
 	}
 	i = 0;
@@ -52,12 +49,13 @@ int	main(int argc, char **argv)
 			fprintf(stderr, "compilation failed \n");
 			return (1);
 		}
+
 		i++;
 	}
 	pthread_join(monitor_tid, NULL);
 	printf("%d\n", sim.coders[1].compiles_done);
 	printf("%d\n", sim.coders[0].compiles_done);
 
-	//destroy_sim(&sim);
+	destroy_sim(&sim);
 	return (0);
 }

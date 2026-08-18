@@ -42,18 +42,5 @@ void	wait_for_dongle(t_sim *sim, t_dongle *d)
 		deadline.tv_sec += 1;
 		deadline.tv_nsec -= 1000000000L;
 	}
-    //fprintf(stdout, "deadline : %ld", deadline.tv_sec);
 	pthread_cond_timedwait(&d->cond, &d->lock, &deadline);
 }
-
-// int main()
-// {
-//     long start = get_timesstamp_ms();
-//     printf(" start : %ld, ", start);
-// }
-// int main()
-// {
-//     long start = get_timesstamp_ms();
-//     usleep(25000);
-//     printf("time passed = %ld", get_timesstamp_ms() - start);
-// }

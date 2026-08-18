@@ -59,8 +59,6 @@ typedef struct s_sim
 	long			start_time_ms;
 }	t_sim;
 
-
-
 //fucntions 
 bool    parsing(char **arg,t_config *config);
 bool	ft_parse_scheduler(const char *str, int *out_sched);
@@ -81,6 +79,6 @@ bool    check_burnout(t_sim *sim);
 bool    check_all_compiled(t_sim *sim);
 
 void	*coder_routine(void *arg);
-
+void	destroy_sim(t_sim *sim);
 
 #endif

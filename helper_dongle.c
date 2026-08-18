@@ -38,9 +38,8 @@ void acquire_dognle(t_sim *sim, t_dongle *d, int coder_id)
         if ((d->in_use) == false)
         {
             wait_for_dongle(sim, d);
-            printf("woke up\n");
         }
-        else
+        else if((d->in_use) == true)
         {
             pthread_cond_wait(&d->cond, &d->lock); 
         }
@@ -61,11 +60,10 @@ void release_dongle(t_sim *sim, t_dongle *d)
         d->in_use= false;
         // adding the time for now + time to cooldown
         d->available_at_ms = elapsed_ms(sim) + sim->cfg.dongle_cooldown;
-        fprintf(stdout, "----------------(sim) : %ld + %ld \n\n", elapsed_ms(sim), sim->cfg.dongle_cooldown);
         //fprintf(stdout, "\n\available at cooldown = %ld $$$$$$$$$$$$$$$$$$$$", d->available_at_ms);
        //fprintf(stdout, "the dongle is available at %ld\n", d->available_at_ms);
        // return this, i only delet it beceaus of test
-       // pthread_cond_broadcast(&d->cond);
+       pthread_cond_broadcast(&d->cond);
        pthread_mutex_unlock(&d->lock);
        return;
     }

@@ -10,6 +10,7 @@ bool    do_compile(t_sim *sim, t_coder *c)
     if (is_stoped(sim))
         return (false);
     // dead lock avoidance , the way we distrubute what coders take first
+    
     if (c->id % 2 == 0)
     {
         //fprintf(stdout, "coder %d trying to take right\n", c->id);
@@ -32,12 +33,10 @@ bool    do_compile(t_sim *sim, t_coder *c)
     //usleep uses microsecendes
     // multiply by 1000 to convert time_to_complie from miliseceds to microsecends
     usleep(sim->cfg.time_to_compile * 1000);
-    // end of compiling 
-    //fprintf(stdout, "the coder %d trying to relleased dognle\n", c->id);
+
     release_dongle(sim , c-> right);
     release_dongle(sim , c-> left);
-    //fprintf(stdout, "\nthe coder %d finished comlipe\n", c->id);
-    //fprintf(stdout, "\nthe coder %d locked state\n", c->id);
+
     if (!(is_stoped(sim)))
     {
         // this condition is to prevent to add +1 compilation on a stopped sumulation
@@ -70,13 +69,10 @@ void *coder_routine(void *arg)
     {
         if(!do_compile(s, c))
             return (void *)1;
-        //fprintf(stdout, "\n\npahse 2 debugging**********************\n\n");
         log_state(s, c->id, "is debugging");
         usleep(s->cfg.time_to_debug * 1000);
-        //fprintf(stdout, "\n\n calling is_stoped");
         if (is_stoped(s))
             break;
-        //fprintf(stdout, "\n\n refactoring");
         log_state(s, c->id, "is refactoring");
         usleep(s->cfg.time_to_refactor * 1000);
     }

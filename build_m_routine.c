@@ -28,6 +28,7 @@ bool    check_burnout(t_sim *sim)
     {
         now = elapsed_ms(sim);
         deadline = sim->coders[i].last_compile_start + sim->cfg.time_to_burnout;
+        // idk if we should do the >= here
         if (now > deadline)
         {
             sim->stop = true;
