@@ -34,6 +34,7 @@ typedef struct s_dongle
 	pthread_cond_t		cond;
 	bool				in_use;
 	long				available_at_ms; // 0 or timestamp when cooldown ends
+	t_request		waiting;
 	int	granted_to;
 }	t_dongle;
 
@@ -72,7 +73,6 @@ typedef struct s_sim
 	bool			someone_burned_out;
 	long			start_time_ms;
 	long			request_counter;
-	t_heap			waiting;
 }	t_sim;
 
 
@@ -90,7 +90,7 @@ bool init_sim(t_sim *sim, t_config *cfg);
 
 bool is_stoped(t_sim *sim);
 
-void acquire_dognle(t_sim *sim, t_dongle *d, int coder_id);
+void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c);
 void release_dongle(t_sim *sim, t_dongle *d);
 void log_state(t_sim *sim, int coder_id,const char *msg);
 
@@ -100,5 +100,7 @@ bool    check_all_compiled(t_sim *sim);
 
 void	*coder_routine(void *arg);
 void	destroy_sim(t_sim *sim);
+
+//heap fucnitons
 
 #endif

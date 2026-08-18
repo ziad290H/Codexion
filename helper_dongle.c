@@ -20,17 +20,45 @@ void log_state(t_sim *sim, int coder_id,const char *msg)
     fprintf(stdout, "%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
 // now we unlock the log_lock if any thred wants to write to it
     pthread_mutex_unlock(&sim->log_lock);
-} 
+}
 
-void acquire_dognle(t_sim *sim, t_dongle *d, int coder_id)
+long    compute_priority_key(t_sim *sim, t_coder *c)
+{
+    if (sim->cfg.scheduler == 0)
+    {
+        //case for fifo;
+        pthread_mutex_lock(&sim->state_lock);
+        sim->request_counter++;
+        pthread_mutex_unlock(&sim->state_lock);
+        return (sim->request_counter);
+    }
+    else
+        return(c->last_compile_start + sim->cfg.time_to_burnout);
+}
+
+void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c)
 {
     long    now;
+    t_request   req;
 
 //  we lock a dongle when a want to change the metadata of it (is_use, available_at)
 // we lock the dongle and mutex soo we can not be falling in the race-condition (another coder change it statue)
     pthread_mutex_lock(&d->lock);
-    //fprintf(stdout, "coder %d  lock it ", coder_id);
+    
+    req.coder_id = c->id;
+    req.key = compute_priority_key(sim, c);
+    pthread_mutex_lock(&sim->state_lock);
+    
+    // the seq is used in caase in edf 2 coders have the same deadline
+    // we sort them by whaat request is first
+    req.seq = sim->request_counter;
+
+    pthread_mutex_unlock(&sim->state_lock);
     now = elapsed_ms(sim);
+
+    //pushing to the heap
+    heap_push(&d->waiting, req);
+
     while (d->in_use || now < d->available_at_ms)
     {
         // one or more thread will be sleeping waiting for the cond
@@ -48,7 +76,7 @@ void acquire_dognle(t_sim *sim, t_dongle *d, int coder_id)
     d -> in_use = true;
     pthread_mutex_unlock(&d->lock);
     //fprintf(stdout, "unlocked");
-    log_state(sim, coder_id, "has taken a dognle");
+    log_state(sim, c->id, "has taken a dognle");
 
 }
 

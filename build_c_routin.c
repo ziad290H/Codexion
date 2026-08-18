@@ -13,14 +13,14 @@ bool    do_compile(t_sim *sim, t_coder *c)
     
     if (c->id % 2 == 0)
     {
-        acquire_dognle(sim, c->right, c->id);
-        acquire_dognle(sim, c->left, c->id);
+        acquire_dognle(sim, c->right, c);
+        acquire_dognle(sim, c->left, c);
         // reopen the lock of sim -> heap_lock
     }
     else
     {
-        acquire_dognle(sim, c->left, c->id);
-        acquire_dognle(sim, c->right, c->id);
+        acquire_dognle(sim, c->left, c);
+        acquire_dognle(sim, c->right, c);
         // reopen the lock of sim -> heap_lock
     }
     pthread_mutex_lock(&sim->state_lock);
