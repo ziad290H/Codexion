@@ -13,17 +13,15 @@ bool    do_compile(t_sim *sim, t_coder *c)
     
     if (c->id % 2 == 0)
     {
-        //fprintf(stdout, "coder %d trying to take right\n", c->id);
         acquire_dognle(sim, c->right, c->id);
-        //fprintf(stdout, "coder %d trying to take left\n", c->id);
         acquire_dognle(sim, c->left, c->id);
+        // reopen the lock of sim -> heap_lock
     }
     else
     {
-        //fprintf(stdout, "coder %d trying to take left\n", c->id);
         acquire_dognle(sim, c->left, c->id);
-        //fprintf(stdout, "coder %d trying to take right\n", c->id);
         acquire_dognle(sim, c->right, c->id);
+        // reopen the lock of sim -> heap_lock
     }
     pthread_mutex_lock(&sim->state_lock);
     c->last_compile_start = elapsed_ms(sim);
@@ -57,6 +55,16 @@ bool is_stoped(t_sim *sim)
     return(val);
 }
 
+bool done_compiling(t_sim *s,t_coder *c)
+{
+    int target;
+
+    target = s->cfg.compiles_required;
+    if (c->compiles_done >= target)
+        return (true);
+    return (false);
+}
+
 void *coder_routine(void *arg)
 {
     t_coder *c;
@@ -67,6 +75,8 @@ void *coder_routine(void *arg)
 
     while (!is_stoped(s))
     {
+        if (done_compiling(s, c))
+            break;
         if(!do_compile(s, c))
             return (void *)1;
         log_state(s, c->id, "is debugging");

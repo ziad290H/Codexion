@@ -34,6 +34,7 @@ typedef struct s_dongle
 	pthread_cond_t		cond;
 	bool				in_use;
 	long				available_at_ms; // 0 or timestamp when cooldown ends
+	int	granted_to;
 }	t_dongle;
 
 typedef struct s_coder
@@ -47,6 +48,19 @@ typedef struct s_coder
 	struct s_sim	*sim;            // back-pointer to shared state
 }	t_coder;
 
+typedef struct s_request
+{
+	int	coder_id;
+	long	key;
+	long	seq;
+}	t_request;
+
+typedef struct s_heap
+{
+	t_request	*items;
+	int	size;
+}	t_heap;
+
 typedef struct s_sim
 {
 	t_config		cfg;
@@ -57,7 +71,13 @@ typedef struct s_sim
 	bool			stop;
 	bool			someone_burned_out;
 	long			start_time_ms;
+	long			request_counter;
+	t_heap			waiting;
 }	t_sim;
+
+
+
+
 
 //fucntions 
 bool    parsing(char **arg,t_config *config);
