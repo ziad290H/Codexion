@@ -44,3 +44,6 @@ void	wait_for_dongle(t_sim *sim, t_dongle *d)
 	}
 	pthread_cond_timedwait(&d->cond, &d->lock, &deadline);
 }
+
+
+void smarter_sleep()
