@@ -11,6 +11,7 @@ bool    do_compile(t_sim *sim, t_coder *c)
         return (false);
     // dead lock avoidance , the way we distrubute what coders take first
     
+    fprintf(stderr, "\nstat compiling\n\n");
     if (c->id % 2 == 0)
     {
         acquire_dognle(sim, c->right, c);
@@ -30,7 +31,7 @@ bool    do_compile(t_sim *sim, t_coder *c)
     log_state(sim, c->id, "is compiling");
     //usleep uses microsecendes
     // multiply by 1000 to convert time_to_complie from miliseceds to microsecends
-    usleep(sim->cfg.time_to_compile * 1000);
+    smarte_sleep(sim, sim->cfg.time_to_compile);
 
     release_dongle(sim , c-> right);
     release_dongle(sim , c-> left);
@@ -77,15 +78,17 @@ void *coder_routine(void *arg)
     {
         if (done_compiling(s, c))
             break;
+        fprintf(stderr, "ziaaaaaaaaaaaaad daouari");
+
         if(!do_compile(s, c))
             return (void *)1;
         log_state(s, c->id, "is debugging");
-        usleep(s->cfg.time_to_debug * 1000);
+        smarte_sleep(s, s->cfg.time_to_debug );
+
         if (is_stoped(s))
             break;
         log_state(s, c->id, "is refactoring");
-        usleep(s->cfg.time_to_refactor * 1000);
+        smarte_sleep(s, s->cfg.time_to_refactor);
     }
-
     return (NULL);
 }

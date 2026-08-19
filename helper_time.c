@@ -46,4 +46,24 @@ void	wait_for_dongle(t_sim *sim, t_dongle *d)
 }
 
 
-void smarter_sleep()
+void smarte_sleep(t_sim *sim, long time)
+{
+
+	long	start;
+	long	remaining;
+	long	sleep_ms;
+
+	start= elapsed_ms(sim);
+
+	while(elapsed_ms(sim) - start < time)
+	{
+		remaining = time - (elapsed_ms(sim) - start);
+		if (remaining < 10)
+			sleep_ms = remaining;
+		else
+			sleep_ms = 10;
+		usleep(sleep_ms  * 1000);
+		if (sim->stop)
+			break;
+	}
+}

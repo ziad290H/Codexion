@@ -7,14 +7,17 @@ bool heap_less(t_request *a, t_request *b)
     return  (a->seq < b ->seq);
 }
 
-void    heap_push(t_heap *heap, t_request *a)
+void    heap_push(t_heap *heap, t_request a)
 {
     int i;
 
+    int parent;
+    
+    fprintf(stderr, "heap->size : %d ", heap->size);
+    heap->items[heap->size] = a;
     i = heap->size;
     heap->size++;
-    int parent;
- 
+
     while(i > 0)
     {
         parent = (i - 1) / 2;

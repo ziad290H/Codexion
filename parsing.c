@@ -17,9 +17,8 @@ bool parsing(char **argv,t_config *config)
     }
     config->num_coders = (int)tmp;
 
-    printf("number of coders = : %ld\n", tmp);
-    printf("number of coders = : %d", config->num_coders);
-    
+    printf("number of ziad coders = : %ld\n", tmp);
+    fprintf(stderr, "number of coders = : %d", config->num_coders);
     if(!ft_parse_positive_field(argv[2], 0, &config->time_to_burnout))
     {
         printf("time_to_burnout should be a positive int");
@@ -50,6 +49,7 @@ bool parsing(char **argv,t_config *config)
         printf("compiles_required should be a valid positiv int");
         return (false);
     }
+    
     config->compiles_required = (int)tmp;
     if (!ft_parse_positive_field(argv[7], 0, &config->dongle_cooldown))
     {

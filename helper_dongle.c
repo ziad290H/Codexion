@@ -52,12 +52,13 @@ void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c)
     // the seq is used in caase in edf 2 coders have the same deadline
     // we sort them by whaat request is first
     req.seq = sim->request_counter;
-
+    
     pthread_mutex_unlock(&sim->state_lock);
     now = elapsed_ms(sim);
-
+    
     //pushing to the heap
     heap_push(&d->waiting, req);
+    fprintf(stderr, "m *****heeeeere \n\n");
 
     while (d->in_use || now < d->available_at_ms)
     {

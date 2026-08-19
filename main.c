@@ -26,7 +26,7 @@ int	main(int argc, char **argv)
     i = 0;
     while(i < sim.cfg.num_coders)
     {
-        if (pthread_create(&sim.coders[i].thread, NULL, coder_routine, &sim.coders[i]) != 0)
+		if (pthread_create(&sim.coders[i].thread, NULL, coder_routine, &sim.coders[i]) != 0)
 		{
 			fprintf(stderr, "thread creation failed\n");
 			destroy_sim(&sim);
