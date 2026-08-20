@@ -17,7 +17,7 @@ void log_state(t_sim *sim, int coder_id,const char *msg)
         return;
     }
     pthread_mutex_unlock(&sim->state_lock);
-    fprintf(stderr, "%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
+    fprintf(stdout, "%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
 // now we unlock the log_lock if any thred wants to write to it
     pthread_mutex_unlock(&sim->log_lock);
 }
@@ -44,9 +44,9 @@ void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c)
     t_request tmp;
 //  we lock a dongle when a want to change the metadata of it (is_use, available_at)
 // we lock the dongle and mutex soo we can not be falling in the race-condition (another coder change it statue)
-    fprintf(stderr, "coder : %d willing to lock %p\n", c->id, d);
+    // fprintf(stderr, "coder : %d willing to lock %p\n", c->id, d);
     pthread_mutex_lock(&d->lock);
-    fprintf(stderr, "coder : %d locked it \n", c->id);
+    // fprintf(stderr, "coder : %d locked it \n", c->id);
     req.coder_id = c->id;
     req.key = compute_priority_key(sim, c);
     pthread_mutex_lock(&sim->state_lock);
@@ -74,12 +74,11 @@ void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c)
             pthread_cond_wait(&d->cond, &d->lock); 
         }
         now = elapsed_ms(sim);
-        fprintf(stderr, "waiting ... ");
 
     }
     d -> in_use = true;
     tmp = heap_extract_min(&d->waiting);
-    fprintf(stderr, "extracte it sucssufulli %d\n", tmp.coder_id);
+    // fprintf(stderr, "extracte it sucssufulli %d\n", tmp.coder_id);
     pthread_mutex_unlock(&d->lock);
     log_state(sim, c->id, "has taken a dognle");
 

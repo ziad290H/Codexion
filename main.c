@@ -44,7 +44,7 @@ int	main(int argc, char **argv)
 	while (i < sim.cfg.num_coders)
 	{
 		pthread_join(sim.coders[i].thread, &result);
-		if (result!= NULL)
+		if (result != NULL)
 		{
 			fprintf(stderr, "compilation failed \n");
 			return (1);
@@ -53,8 +53,6 @@ int	main(int argc, char **argv)
 		i++;
 	}
 	pthread_join(monitor_tid, NULL);
-	printf("%d\n", sim.coders[1].compiles_done);
-	printf("%d\n", sim.coders[0].compiles_done);
 
 	destroy_sim(&sim);
 	return (0);

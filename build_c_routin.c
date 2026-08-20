@@ -4,11 +4,11 @@ bool    do_compile(t_sim *sim, t_coder *c)
 {
     if (c->left == c->right)
     {
-        fprintf(stdout, " dongle left == dongle right\n");
         return (false);
     }
     if (is_stoped(sim))
         return (false);
+    // changer the return from false to true
     // dead lock avoidance , the way we distrubute what coders take first
     
     if (c->id % 2 == 0)
@@ -31,7 +31,6 @@ bool    do_compile(t_sim *sim, t_coder *c)
     //usleep uses microsecendes
     // multiply by 1000 to convert time_to_complie from miliseceds to microsecends
     smarte_sleep(sim, sim->cfg.time_to_compile);
-    fprintf(stderr," \n\n\nn\the coder %d woke up\n ******", c->id);
     release_dongle(sim , c-> right);
     release_dongle(sim , c-> left);
 
@@ -79,7 +78,7 @@ void *coder_routine(void *arg)
             break;
 
         if(!do_compile(s, c))
-            return (void *)1;
+            break;
         log_state(s, c->id, "is debugging");
         smarte_sleep(s, s->cfg.time_to_debug );
 

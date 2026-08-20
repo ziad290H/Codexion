@@ -1,0 +1,248 @@
+0 1 has taken a dognle
+0 1 has taken a dognle
+0 1 is compiling
+0 2 has taken a dognle
+0 4 has taken a dognle
+0 4 has taken a dognle
+0 4 is compiling
+200 1 is debugging
+200 4 is debugging
+200 2 has taken a dognle
+200 2 is compiling
+200 5 has taken a dognle
+200 5 has taken a dognle
+200 5 is compiling
+400 1 is refactoring
+400 4 is refactoring
+400 2 is debugging
+400 3 has taken a dognle
+400 3 has taken a dognle
+400 3 is compiling
+401 5 is debugging
+600 1 has taken a dognle
+600 1 has taken a dognle
+600 1 is compiling
+600 3 is debugging
+601 4 has taken a dognle
+601 4 has taken a dognle
+601 4 is compiling
+601 2 is refactoring
+602 5 is refactoring
+800 3 is refactoring
+800 1 is debugging
+801 4 is debugging
+801 2 has taken a dognle
+801 2 has taken a dognle
+801 2 is compiling
+802 5 has taken a dognle
+802 5 has taken a dognle
+802 5 is compiling
+1000 1 is refactoring
+1002 4 is refactoring
+1002 2 is debugging
+1002 3 has taken a dognle
+1002 3 has taken a dognle
+1002 3 is compiling
+1002 5 is debugging
+1200 1 has taken a dognle
+1200 1 has taken a dognle
+1200 1 is compiling
+1202 2 is refactoring
+1203 4 has taken a dognle
+1203 4 has taken a dognle
+1203 4 is compiling
+1203 3 is debugging
+1203 5 is refactoring
+1401 1 is debugging
+1402 2 has taken a dognle
+1402 2 has taken a dognle
+1402 2 is compiling
+1403 4 is debugging
+1403 5 has taken a dognle
+1403 5 has taken a dognle
+1403 5 is compiling
+1403 3 is refactoring
+1601 1 is refactoring
+1603 2 is debugging
+1603 3 has taken a dognle
+1603 3 has taken a dognle
+1603 3 is compiling
+1603 5 is debugging
+1603 4 is refactoring
+1801 1 has taken a dognle
+1801 1 has taken a dognle
+1801 1 is compiling
+1803 3 is debugging
+1803 5 is refactoring
+1803 4 has taken a dognle
+1803 4 has taken a dognle
+1803 4 is compiling
+1803 2 is refactoring
+2002 1 is debugging
+2003 4 is debugging
+2003 3 is refactoring
+2003 2 has taken a dognle
+2003 2 has taken a dognle
+2003 2 is compiling
+2003 5 has taken a dognle
+2003 5 has taken a dognle
+2003 5 is compiling
+2202 1 is refactoring
+2203 5 is debugging
+2204 4 is refactoring
+2204 2 is debugging
+2204 3 has taken a dognle
+2204 3 has taken a dognle
+2204 3 is compiling
+2402 1 has taken a dognle
+2402 1 has taken a dognle
+2402 1 is compiling
+2404 5 is refactoring
+2405 2 is refactoring
+2405 3 is debugging
+2405 4 has taken a dognle
+2405 4 has taken a dognle
+2405 4 is compiling
+2602 1 is debugging
+2606 3 is refactoring
+2606 2 has taken a dognle
+2606 2 has taken a dognle
+2606 2 is compiling
+2606 4 is debugging
+2606 5 has taken a dognle
+2606 5 has taken a dognle
+2606 5 is compiling
+2802 1 is refactoring
+2807 5 is debugging
+2807 2 is debugging
+2807 4 is refactoring
+2807 3 has taken a dognle
+2807 3 has taken a dognle
+2807 3 is compiling
+3002 1 has taken a dognle
+3002 1 has taken a dognle
+3002 1 is compiling
+3007 3 is debugging
+3008 2 is refactoring
+3008 4 has taken a dognle
+3008 4 has taken a dognle
+3008 4 is compiling
+3008 5 is refactoring
+3202 1 is debugging
+3207 3 is refactoring
+3208 4 is debugging
+3208 2 has taken a dognle
+3208 2 has taken a dognle
+3208 2 is compiling
+3208 5 has taken a dognle
+3208 5 has taken a dognle
+3208 5 is compiling
+3402 1 is refactoring
+3408 2 is debugging
+3408 3 has taken a dognle
+3408 3 has taken a dognle
+3408 3 is compiling
+3409 4 is refactoring
+3409 5 is debugging
+3602 1 has taken a dognle
+3602 1 has taken a dognle
+3602 1 is compiling
+3608 2 is refactoring
+3608 3 is debugging
+3609 5 is refactoring
+3609 4 has taken a dognle
+3609 4 has taken a dognle
+3609 4 is compiling
+3802 1 is debugging
+3808 3 is refactoring
+3808 2 has taken a dognle
+3808 2 has taken a dognle
+3808 2 is compiling
+3810 4 is debugging
+3810 5 has taken a dognle
+3810 5 has taken a dognle
+3810 5 is compiling
+4002 1 is refactoring
+4009 2 is debugging
+4009 3 has taken a dognle
+4009 3 has taken a dognle
+4009 3 is compiling
+4010 4 is refactoring
+4011 5 is debugging
+4202 1 has taken a dognle
+4202 1 has taken a dognle
+4202 1 is compiling
+4209 3 is debugging
+4210 2 is refactoring
+4211 4 has taken a dognle
+4211 4 has taken a dognle
+4211 4 is compiling
+4211 5 is refactoring
+4402 1 is debugging
+4410 2 has taken a dognle
+4410 2 has taken a dognle
+4410 2 is compiling
+4410 3 is refactoring
+4411 4 is debugging
+4411 5 has taken a dognle
+4411 5 has taken a dognle
+4411 5 is compiling
+4602 1 is refactoring
+4610 2 is debugging
+4610 3 has taken a dognle
+4610 3 has taken a dognle
+4610 3 is compiling
+4611 4 is refactoring
+4611 5 is debugging
+4802 1 has taken a dognle
+4802 1 has taken a dognle
+4802 1 is compiling
+4811 3 is debugging
+4811 2 is refactoring
+4811 5 is refactoring
+4811 4 has taken a dognle
+4811 4 has taken a dognle
+4811 4 is compiling
+5002 1 is debugging
+5011 3 is refactoring
+5011 2 has taken a dognle
+5011 2 has taken a dognle
+5011 2 is compiling
+5012 5 has taken a dognle
+5012 5 has taken a dognle
+5012 5 is compiling
+5012 4 is debugging
+5202 1 is refactoring
+5211 2 is debugging
+5211 3 has taken a dognle
+5211 3 has taken a dognle
+5211 3 is compiling
+5212 5 is debugging
+5212 4 is refactoring
+5402 1 has taken a dognle
+5402 1 has taken a dognle
+5402 1 is compiling
+5411 3 is debugging
+5411 2 is refactoring
+5412 5 is refactoring
+5412 4 has taken a dognle
+5412 4 has taken a dognle
+5412 4 is compiling
+5602 1 is debugging
+5611 3 is refactoring
+5611 2 has taken a dognle
+5611 2 has taken a dognle
+5611 2 is compiling
+5612 4 is debugging
+5612 5 has taken a dognle
+5612 5 has taken a dognle
+5612 5 is compiling
+5803 1 is refactoring
+5811 2 is debugging
+5811 3 has taken a dognle
+5811 3 has taken a dognle
+5811 3 is compiling
+5812 5 is debugging
+5812 4 is refactoring
+6011 3 is debugging
+6011 2 is refactoring

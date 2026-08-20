@@ -60,9 +60,9 @@ bool    check_all_compiled(t_sim *sim)
         }
 		i++;
     }
-	fprintf(stdout, "\n we are out at %d\n",  sim->coders[0].compiles_done);
-	fprintf(stdout, "\n we are out at %d\n",  sim->coders[1].compiles_done);
-	fprintf(stdout, "\n we are out at %d\n",  sim->coders[2].compiles_done);
+	//fprintf(stdout, "\n we are out at %d\n",  sim->coders[0].compiles_done);
+	//fprintf(stdout, "\n we are out at %d\n",  sim->coders[1].compiles_done);
+	//fprintf(stdout, "\n we are out at %d\n",  sim->coders[2].compiles_done);
     sim->stop = true;
 	pthread_mutex_unlock(&sim->state_lock);
     return (true);

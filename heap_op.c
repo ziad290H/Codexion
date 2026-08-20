@@ -22,7 +22,6 @@ void    heap_push(t_heap *heap, t_request a)
         parent = (i - 1) / 2;
         if (!(heap_less(&heap->items[i], &heap->items[parent])))
         {
-            fprintf(stderr, "inside  loop the hea_push function ");
             break;
         }
             heap_swap(&heap->items[i], &heap->items[parent]);
