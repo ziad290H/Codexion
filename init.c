@@ -5,7 +5,6 @@ bool init_dongles(t_sim *sim)
     int	i;
 
 	sim->dongles = malloc(sizeof(t_dongle) * sim->cfg.num_coders);
-	// not sure about the allocation
 	if (!sim->dongles)
 		return (false);
 	i = 0;
@@ -17,9 +16,9 @@ bool init_dongles(t_sim *sim)
 		return (false);
 		sim->dongles[i].in_use = false;
 		sim->dongles[i].available_at_ms = 0;
-		sim->dongles[i].waiting.items = malloc(sizeof(t_request) * sim->cfg.num_coders);
-		if (sim->dongles[i].waiting.items == NULL)
-			return (NULL);
+		sim->dongles[i].waiting.items = malloc(sizeof(t_request) * 2);
+		if (!(sim->dongles[i].waiting.items))
+			return (false);
 		sim->dongles[i].granted_to = -1;
 		sim->dongles[i].waiting.size = 0;
 		i++;

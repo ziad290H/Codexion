@@ -24,7 +24,7 @@ typedef struct s_config
 	long	time_to_refactor;
 	int		compiles_required;
 	long	dongle_cooldown;
-	int		scheduler;   // 0 = fifo, 1 = edf
+	int		scheduler;
 }	t_config;
 ///structyure 
 
@@ -44,14 +44,14 @@ typedef struct s_dongle
 	pthread_mutex_t	lock;
 	pthread_cond_t		cond;
 	bool				in_use;
-	long				available_at_ms; // 0 or timestamp when cooldown ends
+	long				available_at_ms; 
 	t_heap				waiting;
-	int					granted_to;
+	int					granted_to; // idk are we usign  this
 }	t_dongle;
 
 typedef struct s_coder
 {
-	int				id;              // 1..N
+	int				id;
 	pthread_t		thread;
 	int				compiles_done;
 	long			last_compile_start; // ms, for burnout + edf deadline
@@ -105,7 +105,7 @@ void	destroy_sim(t_sim *sim);
 t_request peek_the_min(t_heap *heap);
 void heap_swap(t_request *a, t_request *b);
 void heap_remove(t_heap *heap, int  coder_id);
-t_request    heap_exxtract_min(t_heap *heap);
+t_request    heap_extract_min(t_heap *heap);
 void    heap_push(t_heap *heap, t_request a);
 void    heap_sift_down(t_heap *heap, int i);
 bool heap_less(t_request *a, t_request *b);

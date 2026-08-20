@@ -17,7 +17,7 @@ void log_state(t_sim *sim, int coder_id,const char *msg)
         return;
     }
     pthread_mutex_unlock(&sim->state_lock);
-    fprintf(stdout, "%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
+    fprintf(stderr, "%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
 // now we unlock the log_lock if any thred wants to write to it
     pthread_mutex_unlock(&sim->log_lock);
 }
@@ -40,11 +40,13 @@ void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c)
 {
     long    now;
     t_request   req;
-
+    // dont forget to delet it
+    t_request tmp;
 //  we lock a dongle when a want to change the metadata of it (is_use, available_at)
 // we lock the dongle and mutex soo we can not be falling in the race-condition (another coder change it statue)
+    fprintf(stderr, "coder : %d willing to lock %p\n", c->id, d);
     pthread_mutex_lock(&d->lock);
-    
+    fprintf(stderr, "coder : %d locked it \n", c->id);
     req.coder_id = c->id;
     req.key = compute_priority_key(sim, c);
     pthread_mutex_lock(&sim->state_lock);
@@ -58,9 +60,8 @@ void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c)
     
     //pushing to the heap
     heap_push(&d->waiting, req);
-    fprintf(stderr, "m *****heeeeere \n\n");
-
-    while (d->in_use || now < d->available_at_ms)
+    
+    while (d->in_use || now < d->available_at_ms || peek_the_min(&d->waiting).coder_id != c->id)
     {
         // one or more thread will be sleeping waiting for the cond
         //fprintf(stdout, "coder %d waiiting to dongle to be available\n", coder_id);
@@ -68,15 +69,18 @@ void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c)
         {
             wait_for_dongle(sim, d);
         }
-        else if((d->in_use) == true)
+        if((d->in_use) == true)
         {
             pthread_cond_wait(&d->cond, &d->lock); 
         }
         now = elapsed_ms(sim);
+        fprintf(stderr, "waiting ... ");
+
     }
     d -> in_use = true;
+    tmp = heap_extract_min(&d->waiting);
+    fprintf(stderr, "extracte it sucssufulli %d\n", tmp.coder_id);
     pthread_mutex_unlock(&d->lock);
-    //fprintf(stdout, "unlocked");
     log_state(sim, c->id, "has taken a dognle");
 
 }

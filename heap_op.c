@@ -13,7 +13,6 @@ void    heap_push(t_heap *heap, t_request a)
 
     int parent;
     
-    fprintf(stderr, "heap->size : %d ", heap->size);
     heap->items[heap->size] = a;
     i = heap->size;
     heap->size++;
@@ -22,11 +21,15 @@ void    heap_push(t_heap *heap, t_request a)
     {
         parent = (i - 1) / 2;
         if (!(heap_less(&heap->items[i], &heap->items[parent])))
+        {
+            fprintf(stderr, "inside  loop the hea_push function ");
             break;
-        heap_swap(&heap->items[i], &heap->items[parent]);
+        }
+            heap_swap(&heap->items[i], &heap->items[parent]);
         i = parent;
     }
 }
+
 void    heap_sift_down(t_heap *heap, int i)
 {
     int    left;
@@ -50,7 +53,7 @@ void    heap_sift_down(t_heap *heap, int i)
 }
 
 // return the min of the heap and also delet it and swift_down
-t_request    heap_exxtract_min(t_heap *heap)
+t_request    heap_extract_min(t_heap *heap)
 {
     int i ;
     t_request min;
@@ -67,12 +70,15 @@ void heap_remove(t_heap *heap, int  coder_id)
     int idx;
 
     idx = -1;
-    i = heap->size;
+    i = 0;
 
-    while (i > 0)
+    while (i < heap->size)
     {
         if (heap->items[i].coder_id == coder_id)
+        {
+            idx = i;
             break;
+        }
         i++;
     }
     if (idx == -1)
@@ -81,7 +87,8 @@ void heap_remove(t_heap *heap, int  coder_id)
     // you make it in it s place
     heap->size--;
     heap->items[idx] = heap->items[heap->size];
-    heap_sift_down(heap, idx);
+    if (idx < heap->size)
+        heap_sift_down(heap, idx);
 }
 
 void heap_swap(t_request *a, t_request *b)
@@ -99,7 +106,16 @@ bool heap_is_empty(t_heap *heap)
 }
 
 // see the min
-t_request peek_the_min(t_heap *heap)
+t_request    peek_the_min(t_heap *heap)
 {
+    if (heap->size == 0)
+    {
+        // return a sentinel/invalid request
+        t_request empty;
+        empty.coder_id = -1;
+        empty.key = LONG_MAX;
+        empty.seq = LONG_MAX;
+        return (empty);
+    }
     return (heap->items[0]);
 }

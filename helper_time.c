@@ -53,7 +53,7 @@ void smarte_sleep(t_sim *sim, long time)
 	long	remaining;
 	long	sleep_ms;
 
-	start= elapsed_ms(sim);
+	start = elapsed_ms(sim);
 
 	while(elapsed_ms(sim) - start < time)
 	{
