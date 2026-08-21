@@ -14,3 +14,12 @@ dibaar is notion page : https://daibbarcom.notion.site/codexion
  i need  a smart sleep that wake up eevry 1ms to check if sm1 burned out
 
  i hhave a segfoult because of theallocatiion 
+//////////
+friday note : i need to protect the heap by a mutex
+
+what is atomic operations
+
+
+
+pthread_mutex_t is an opaque implementation-defined synchronization object.
+ Internally, the pthread implementation maintains the state needed for ownership and contention, but we don't access its fields directly.
