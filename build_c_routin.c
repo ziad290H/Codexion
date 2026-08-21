@@ -79,6 +79,9 @@ void *coder_routine(void *arg)
 
         if(!do_compile(s, c))
             break;
+        if (is_stoped(s))
+            break;
+
         log_state(s, c->id, "is debugging");
         smarte_sleep(s, s->cfg.time_to_debug );
 

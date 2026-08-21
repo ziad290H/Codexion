@@ -24,16 +24,20 @@ void log_state(t_sim *sim, int coder_id,const char *msg)
 
 long    compute_priority_key(t_sim *sim, t_coder *c)
 {
+    pthread_mutex_lock(&sim->state_lock);
+    sim->request_counter++;
+    pthread_mutex_unlock(&sim->state_lock);
     if (sim->cfg.scheduler == 0)
     {
         //case for fifo;
-        pthread_mutex_lock(&sim->state_lock);
-        sim->request_counter++;
-        pthread_mutex_unlock(&sim->state_lock);
         return (sim->request_counter);
     }
+    // edf
     else
+    {
+        // printf("wee eeeee&&&&&");    
         return(c->last_compile_start + sim->cfg.time_to_burnout);
+    }
 }
 
 void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c)
@@ -48,6 +52,7 @@ void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c)
     pthread_mutex_lock(&d->lock);
     // fprintf(stderr, "coder : %d locked it \n", c->id);
     req.coder_id = c->id;
+    //printf("\ncoder %d is calculating periority key", c->id);
     req.key = compute_priority_key(sim, c);
     pthread_mutex_lock(&sim->state_lock);
     
@@ -59,7 +64,17 @@ void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c)
     now = elapsed_ms(sim);
     
     //pushing to the heap
+    //printf("pushing the coder : %d to the heap for dongle : %d\n", c->id, d->id);
     heap_push(&d->waiting, req);
+    // printf("\n size of the heap is %d\n", d->waiting.size);
+    // int i = 0;
+    // printf("the state of the heap: \n");
+    // while (d->waiting.items[i].coder_id)
+    // {
+    //     printf("%d-- ",d->waiting.items[i].coder_id);
+    //     i++;
+    // }
+    // printf("\n");
     
     while (d->in_use || now < d->available_at_ms || peek_the_min(&d->waiting).coder_id != c->id)
     {
@@ -78,6 +93,7 @@ void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c)
     }
     d -> in_use = true;
     tmp = heap_extract_min(&d->waiting);
+    // printf("\n extracting coder : %d with a value of : %ld\n",c->id, tmp.key ); 
     // fprintf(stderr, "extracte it sucssufulli %d\n", tmp.coder_id);
     pthread_mutex_unlock(&d->lock);
     log_state(sim, c->id, "has taken a dognle");

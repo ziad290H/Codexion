@@ -23,3 +23,13 @@ what is atomic operations
 
 pthread_mutex_t is an opaque implementation-defined synchronization object.
  Internally, the pthread implementation maintains the state needed for ownership and contention, but we don't access its fields directly.
+
+
+
+ coder should aquire 2 dongles sumlianessluy
+
+
+
+ e3r11p2% ./codexion 3 23 5 5 5 10 5 edf
+
+kadoz f 2 w 3 la??

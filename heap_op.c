@@ -3,7 +3,7 @@
 bool heap_less(t_request *a, t_request *b)
 {
     if (a->key != b->key)
-        return (a->key < b->key);
+        return (a->key <= b->key);
     return  (a->seq < b ->seq);
 }
 

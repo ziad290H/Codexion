@@ -21,6 +21,7 @@ bool init_dongles(t_sim *sim)
 			return (false);
 		sim->dongles[i].granted_to = -1;
 		sim->dongles[i].waiting.size = 0;
+		sim->dongles[i].id = i + 1;
 		i++;
 	}
 
@@ -55,6 +56,7 @@ bool init_sim(t_sim *sim, t_config *cfg)
 {
 	sim->cfg = *cfg;
 	sim->stop = false;
+	sim->request_counter = 0;
 	sim->someone_burned_out = false;
 	sim->start_time_ms = get_timesstamp_ms();
 	sim->dongles = NULL;
@@ -82,6 +84,7 @@ void	destroy_sim(t_sim *sim)
 		{
 			pthread_mutex_destroy(&sim->dongles[i].lock);
 			pthread_cond_destroy(&sim->dongles[i].cond);
+			free(sim->dongles[i].waiting.items);
 			i++;
 		}
 		free(sim->dongles);

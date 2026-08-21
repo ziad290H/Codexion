@@ -47,6 +47,7 @@ typedef struct s_dongle
 	long				available_at_ms; 
 	t_heap				waiting;
 	int					granted_to; // idk are we usign  this
+	int		id; /// this is for debugiing you should delet it later
 }	t_dongle;
 
 typedef struct s_coder
