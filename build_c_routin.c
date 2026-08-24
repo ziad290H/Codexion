@@ -5,6 +5,7 @@ t_request prepare_the_request(t_coder *coder, t_sim *sim)
 
     pthread_mutex_lock(&sim->state_lock);
     sim->request_counter++;
+    req.coder_id = coder->id;
     if (sim->cfg.scheduler == 0)
     {
         //case for fifo;
@@ -29,15 +30,31 @@ bool	do_compile(t_sim *sim, t_coder *c)
 		return (false);
 	req = prepare_the_request(c, sim);
 	// push request to both heaps before attempting acquisition
-	pthread_mutex_lock(&c->left->lock);
-	heap_push(&c->left->waiting, req);
-	pthread_mutex_unlock(&c->left->lock);
+	if ((c->id % 2) == 0)
+    {
+        pthread_mutex_lock(&c->right->lock);
+        heap_push(&c->right->waiting, req);
+        printf("coder %d pushed to heap %p\n", c->id, &c->right->waiting);
+        pthread_mutex_unlock(&c->right->lock);
 
-	pthread_mutex_lock(&c->right->lock);
-	heap_push(&c->right->waiting, req);
-	pthread_mutex_unlock(&c->right->lock);
+        pthread_mutex_lock(&c->left->lock);
+        heap_push(&c->left->waiting, req);
+        printf("coder %d pushed to heap %p\n", c->id, &c->left->waiting);
+        pthread_mutex_unlock(&c->left->lock);
+    }
+    else if ((c->id % 2) != 0)
+    {
+        pthread_mutex_lock(&c->left->lock);
+        heap_push(&c->left->waiting, req);
+        printf("coder %d pushed to heap %p\n", c->id, &c->left->waiting);
+        pthread_mutex_unlock(&c->left->lock);
 
-	acquire_dognles(sim, c);
+        pthread_mutex_lock(&c->right->lock);
+        heap_push(&c->right->waiting, req);
+        printf("coder %d pushed to heap %p\n", c->id, &c->right->waiting);
+        pthread_mutex_unlock(&c->right->lock);
+    }
+    acquire_dognles(sim, c);
 	if (is_stoped(sim))
 		return (false);
 
