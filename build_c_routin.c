@@ -1,28 +1,46 @@
 #include "codexion.h"
+t_request prepare_the_request(t_coder *coder, t_sim *sim)
+{
+    t_request req;
 
+    pthread_mutex_lock(&sim->state_lock);
+    sim->request_counter++;
+    if (sim->cfg.scheduler == 0)
+    {
+        //case for fifo;
+        req.key = sim->request_counter;
+    }
+    else
+    {
+        req.key = coder->last_compile_start + sim->cfg.time_to_burnout;
+        req.seq = sim->request_counter;
+    }
+    pthread_mutex_unlock(&sim->state_lock);
+    return (req);
+}
 bool    do_compile(t_sim *sim, t_coder *c)
 {
+    t_request   req;
+
+
     if (c->left == c->right)
     {
         return (false);
     }
     if (is_stoped(sim))
         return (false);
-    // changer the return from false to true
-    // dead lock avoidance , the way we distrubute what coders take first
+
+    req = prepare_the_request(c, sim);
+
+    pthread_mutex_lock(&c->right->lock);
+    heap_push(&c->right->waiting, req);
+    pthread_mutex_unlock(&c->right->lock);
+
+    pthread_mutex_lock(&c->left->lock);
+    heap_push(&c->left->waiting, req);
+    pthread_mutex_unlock(&c->left->lock);
+    acquire_dognles(sim, c);
     
-    if (c->id % 2 == 0)
-    {
-        acquire_dognle(sim, c->right, c);
-        acquire_dognle(sim, c->left, c);
-        // reopen the lock of sim -> heap_lock
-    }
-    else
-    {
-        acquire_dognle(sim, c->left, c);
-        acquire_dognle(sim, c->right, c);
-        // reopen the lock of sim -> heap_lock
-    }
     pthread_mutex_lock(&sim->state_lock);
     c->last_compile_start = elapsed_ms(sim);
     pthread_mutex_unlock(&sim->state_lock);
@@ -36,7 +54,6 @@ bool    do_compile(t_sim *sim, t_coder *c)
 
     if (!(is_stoped(sim)))
     {
-        // this condition is to prevent to add +1 compilation on a stopped sumulation
         pthread_mutex_lock(&sim->state_lock);
         c->compiles_done += 1;
         pthread_mutex_unlock(&sim->state_lock);

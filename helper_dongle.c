@@ -22,82 +22,109 @@ void log_state(t_sim *sim, int coder_id,const char *msg)
     pthread_mutex_unlock(&sim->log_lock);
 }
 
-long    compute_priority_key(t_sim *sim, t_coder *c)
+// long    compute_priority_key(t_sim *sim, t_coder *c)
+// {
+//     pthread_mutex_lock(&sim->state_lock);
+//     sim->request_counter++;
+//     if (sim->cfg.scheduler == 0)
+//     {
+//         //case for fifo;
+//         return (sim->request_counter);
+//     }
+//     // edf
+//     else if (sim->cfg.scheduler != 0)
+//     {
+//         // printf("wee eeeee&&&&&");    
+//         return(c->last_compile_start + sim->cfg.time_to_burnout);
+//     }
+//     pthread_mutex_unlock(&sim->state_lock);
+// }
+
+int    check_dongles(t_dongle *left, t_dongle *right)
 {
-    pthread_mutex_lock(&sim->state_lock);
-    sim->request_counter++;
-    pthread_mutex_unlock(&sim->state_lock);
-    if (sim->cfg.scheduler == 0)
-    {
-        //case for fifo;
-        return (sim->request_counter);
-    }
-    // edf
-    else
-    {
-        // printf("wee eeeee&&&&&");    
-        return(c->last_compile_start + sim->cfg.time_to_burnout);
-    }
+    int status;
+
+    status = 0;
+
+    if(left->in_use && right->in_use)
+        status = 1;
+    else if (left->in_use)
+        status = 2;
+    else if (right->in_use)
+        status = 3;
+    return (status);
 }
 
-void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c)
+bool is_cooldown_active(t_dongle *d1, t_dongle *d2, long now)
+{
+    return (now < d1->available_at_ms || now < d2->available_at_ms);
+}
+
+bool check_periority(t_sim *sim, t_dongle *d1 , t_dongle *d2, int coder_id)
+{
+    int per_d1;
+    int per_d2;
+
+    per_d1 = peek_the_min(&d1->waiting).coder_id;
+    per_d2 = peek_the_min(&d2->waiting).coder_id;
+    return (per_d1 == per_d2 && per_d2 == coder_id);
+}
+
+void acquire_dognles(t_sim *sim, t_coder *c)
 {
     long    now;
-    t_request   req;
-    // dont forget to delet it
-    t_request tmp;
-//  we lock a dongle when a want to change the metadata of it (is_use, available_at)
-// we lock the dongle and mutex soo we can not be falling in the race-condition (another coder change it statue)
-    // fprintf(stderr, "coder : %d willing to lock %p\n", c->id, d);
-    pthread_mutex_lock(&d->lock);
-    // fprintf(stderr, "coder : %d locked it \n", c->id);
-    req.coder_id = c->id;
-    //printf("\ncoder %d is calculating periority key", c->id);
-    req.key = compute_priority_key(sim, c);
-    pthread_mutex_lock(&sim->state_lock);
-    
-    // the seq is used in caase in edf 2 coders have the same deadline
-    // we sort them by whaat request is first
-    req.seq = sim->request_counter;
-    
-    pthread_mutex_unlock(&sim->state_lock);
-    now = elapsed_ms(sim);
-    
-    //pushing to the heap
-    //printf("pushing the coder : %d to the heap for dongle : %d\n", c->id, d->id);
-    heap_push(&d->waiting, req);
-    // printf("\n size of the heap is %d\n", d->waiting.size);
-    // int i = 0;
-    // printf("the state of the heap: \n");
-    // while (d->waiting.items[i].coder_id)
-    // {
-    //     printf("%d-- ",d->waiting.items[i].coder_id);
-    //     i++;
-    // }
-    // printf("\n");
-    
-    while (d->in_use || now < d->available_at_ms || peek_the_min(&d->waiting).coder_id != c->id)
+    t_dongle    *d1;
+    t_dongle    *d2;
+
+    if ((c->id % 2) == 0)
+    { 
+        d2 =  c->left;
+        d1 = c->right;
+    }
+    else if ((c->id % 2) != 0)
     {
-        // one or more thread will be sleeping waiting for the cond
-        //fprintf(stdout, "coder %d waiiting to dongle to be available\n", coder_id);
-        if ((d->in_use) == false)
+        d1 = c->left;
+        d2 = c->right;
+    }
+    now = elapsed_ms(sim);
+    pthread_mutex_lock(&d1->lock);
+    pthread_mutex_lock(&d2->lock);
+    while (check_dongles(d1, d2) || is_cooldown_active(d1, d2, now) || !check_periority(sim, d1, d2, c->id))
+    {
+        fprintf(stderr, " slaaaak");
+        if ((check_dongles(d1, d2)) == 0)
         {
-            wait_for_dongle(sim, d);
+            wait_for_dongle(sim, d1, d2);
         }
-        if((d->in_use) == true)
+        else if(check_dongles(d1, d2) != 0)
         {
-            pthread_cond_wait(&d->cond, &d->lock); 
+            if (check_dongles(d1, d2) == 2)
+            {
+                pthread_mutex_unlock(&d2->lock);
+                pthread_cond_wait(&d1->cond, &d1->lock);
+                pthread_mutex_lock(&d2->lock);
+            }
+            else if (check_dongles(d1, d2) == 3)
+            {
+                pthread_mutex_unlock(&d1->lock);
+                pthread_cond_wait(&d2->cond, &d2->lock);
+                pthread_mutex_lock(&d1->lock);
+                
+            }
         }
+        else
+            wait_for_dongle(sim, d1, d2);
         now = elapsed_ms(sim);
 
     }
-    d -> in_use = true;
-    tmp = heap_extract_min(&d->waiting);
-    // printf("\n extracting coder : %d with a value of : %ld\n",c->id, tmp.key ); 
-    // fprintf(stderr, "extracte it sucssufulli %d\n", tmp.coder_id);
-    pthread_mutex_unlock(&d->lock);
+    d1 -> in_use = true;
+    d2-> in_use = true;
+    heap_extract_min(&d1->waiting);
+    heap_extract_min(&d2->waiting);
+    pthread_mutex_unlock(&d2->lock);
+    pthread_mutex_unlock(&d1->lock);
     log_state(sim, c->id, "has taken a dognle");
-
+    log_state(sim, c->id, "has taken a dognle");
 }
 
 void release_dongle(t_sim *sim, t_dongle *d)

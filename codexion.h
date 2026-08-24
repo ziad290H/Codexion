@@ -85,14 +85,14 @@ bool    parsing(char **arg,t_config *config);
 bool	ft_parse_scheduler(const char *str, int *out_sched);
 bool	ft_parse_positive_field(const char *str, long min_val, long *out);
 long elapsed_ms(t_sim *sim);
-void	wait_for_dongle(t_sim *sim, t_dongle *d);
+void	wait_for_dongle(t_sim *sim, t_dongle *d1, t_dongle *d2);
 long get_timesstamp_ms(void);
 bool init_sim(t_sim *sim, t_config *cfg);
 
 bool is_stoped(t_sim *sim);
 void smarte_sleep(t_sim *sim, long time);
 
-void acquire_dognle(t_sim *sim, t_dongle *d, t_coder *c);
+void acquire_dognles(t_sim *sim, t_coder *c);
 void release_dongle(t_sim *sim, t_dongle *d);
 void log_state(t_sim *sim, int coder_id,const char *msg);
 
