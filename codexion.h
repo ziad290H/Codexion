@@ -85,7 +85,6 @@ bool    parsing(char **arg,t_config *config);
 bool	ft_parse_scheduler(const char *str, int *out_sched);
 bool	ft_parse_positive_field(const char *str, long min_val, long *out);
 long elapsed_ms(t_sim *sim);
-void	wait_for_dongle(t_sim *sim, t_dongle *d1, t_dongle *d2);
 long get_timesstamp_ms(void);
 bool init_sim(t_sim *sim, t_config *cfg);
 
@@ -110,6 +109,7 @@ t_request    heap_extract_min(t_heap *heap);
 void    heap_push(t_heap *heap, t_request a);
 void    heap_sift_down(t_heap *heap, int i);
 bool heap_less(t_request *a, t_request *b);
+void	wait_on_dongle(t_sim *sim, t_dongle *held, t_dongle *released,t_dongle *target);
 
 
 //heap fucnitons

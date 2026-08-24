@@ -116,5 +116,6 @@ t_request    peek_the_min(t_heap *heap)
         empty.seq = LONG_MAX;
         return (empty);
     }
+    //printf("\n\nheap : %d", heap->items[0].coder_id);
     return (heap->items[0]);
 }

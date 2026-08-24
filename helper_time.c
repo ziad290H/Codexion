@@ -17,40 +17,29 @@ long elapsed_ms(t_sim *sim)
     return (get_timesstamp_ms() - sim->start_time_ms);
 }
 
-void	wait_for_dongle(t_sim *sim, t_dongle *d1, t_dongle *d2)
+void	wait_on_dongle(t_sim *sim, t_dongle *held, t_dongle *released, t_dongle *target)
 {
-	/// waiting for the max time beetwen the 2 deadlines
 	long			remaining_ms;
-	t_dongle	*dongl_with_farrest_deadline;
-	struct timeval	now;
+	struct timeval	now_tv;
 	struct timespec	deadline;
 
-	// how much cooldown time is left, in ms (from your sim's relative clock)
-	if (d1->available_at_ms > d2->available_at_ms)
-	{
-		remaining_ms = d1->available_at_ms - elapsed_ms(sim);
-		dongl_with_farrest_deadline = d1; 
-	}
-	else if (d1->available_at_ms <= d2->available_at_ms)
-		remaining_ms = d2->available_at_ms - elapsed_ms(sim);
-	//printf("remaining_ms : %ld", remaining_ms);
+	(void)held;
+	remaining_ms = target->available_at_ms - elapsed_ms(sim);
 	if (remaining_ms < 0)
 		remaining_ms = 0;
-
-	// get real wall-clock "now"
-	gettimeofday(&now, NULL);
-
-	// deadline = real now + remaining cooldown, converted to timespec
-	deadline.tv_sec = now.tv_sec + (remaining_ms / 1000); //  this represent secodns
-	deadline.tv_nsec = (now.tv_usec * 1000L) + ((remaining_ms % 1000) * 1000000L); // this repressent nanoseceonds
-
-	// handle nanosecond overflow (must stay < 1,000,000,000)
+	gettimeofday(&now_tv, NULL);
+	deadline.tv_sec = now_tv.tv_sec + (remaining_ms / 1000);
+	deadline.tv_nsec = (now_tv.tv_usec * 1000L)
+		+ ((remaining_ms % 1000) * 1000000L);
 	if (deadline.tv_nsec >= 1000000000L)
 	{
 		deadline.tv_sec += 1;
 		deadline.tv_nsec -= 1000000000L;
 	}
-	pthread_cond_timedwait(&dongl_with_farrest_deadline->cond, &dongl_with_farrest_deadline->lock, &deadline);
+	// release the OTHER lock before sleeping so other threads aren't blocked
+	pthread_mutex_unlock(&released->lock);
+	pthread_cond_timedwait(&target->cond, &target->lock, &deadline);
+	pthread_mutex_lock(&released->lock);
 }
 
 

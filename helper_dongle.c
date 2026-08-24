@@ -40,91 +40,111 @@ void log_state(t_sim *sim, int coder_id,const char *msg)
 //     pthread_mutex_unlock(&sim->state_lock);
 // }
 
-int    check_dongles(t_dongle *left, t_dongle *right)
+int	check_dongles(t_dongle *d1, t_dongle *d2)
 {
-    int status;
-
-    status = 0;
-
-    if(left->in_use && right->in_use)
-        status = 1;
-    else if (left->in_use)
-        status = 2;
-    else if (right->in_use)
-        status = 3;
-    return (status);
+	if (d1->in_use && d2->in_use)
+		return (1);
+	else if (d1->in_use)
+		return (2);
+	else if (d2->in_use)
+		return (3);
+	return (0);
 }
 
-bool is_cooldown_active(t_dongle *d1, t_dongle *d2, long now)
+bool	is_cooldown_active(t_dongle *d1, t_dongle *d2, long now)
 {
-    return (now < d1->available_at_ms || now < d2->available_at_ms);
+	return (now < d1->available_at_ms || now < d2->available_at_ms);
 }
 
-bool check_periority(t_sim *sim, t_dongle *d1 , t_dongle *d2, int coder_id)
+bool	check_periority(t_dongle *d1, t_dongle *d2, int coder_id)
 {
-    int per_d1;
-    int per_d2;
+	int	per_d1;
+	int	per_d2;
 
-    per_d1 = peek_the_min(&d1->waiting).coder_id;
-    per_d2 = peek_the_min(&d2->waiting).coder_id;
-    return (per_d1 == per_d2 && per_d2 == coder_id);
+	// heaps already protected by d1->lock and d2->lock held by caller
+	per_d1 = peek_the_min(&d1->waiting).coder_id;
+	per_d2 = peek_the_min(&d2->waiting).coder_id;
+	return (per_d1 == coder_id && per_d2 == coder_id);
 }
 
-void acquire_dognles(t_sim *sim, t_coder *c)
+
+void	acquire_dognles(t_sim *sim, t_coder *c)
 {
-    long    now;
-    t_dongle    *d1;
-    t_dongle    *d2;
+	t_dongle	*d1;
+	t_dongle	*d2;
+	long		now;
+	int			status;
 
-    if ((c->id % 2) == 0)
-    { 
-        d2 =  c->left;
-        d1 = c->right;
-    }
-    else if ((c->id % 2) != 0)
-    {
-        d1 = c->left;
-        d2 = c->right;
-    }
-    now = elapsed_ms(sim);
-    pthread_mutex_lock(&d1->lock);
-    pthread_mutex_lock(&d2->lock);
-    while (check_dongles(d1, d2) || is_cooldown_active(d1, d2, now) || !check_periority(sim, d1, d2, c->id))
-    {
-        fprintf(stderr, " slaaaak");
-        if ((check_dongles(d1, d2)) == 0)
-        {
-            wait_for_dongle(sim, d1, d2);
-        }
-        else if(check_dongles(d1, d2) != 0)
-        {
-            if (check_dongles(d1, d2) == 2)
-            {
-                pthread_mutex_unlock(&d2->lock);
-                pthread_cond_wait(&d1->cond, &d1->lock);
-                pthread_mutex_lock(&d2->lock);
-            }
-            else if (check_dongles(d1, d2) == 3)
-            {
-                pthread_mutex_unlock(&d1->lock);
-                pthread_cond_wait(&d2->cond, &d2->lock);
-                pthread_mutex_lock(&d1->lock);
-                
-            }
-        }
-        else
-            wait_for_dongle(sim, d1, d2);
-        now = elapsed_ms(sim);
-
-    }
-    d1 -> in_use = true;
-    d2-> in_use = true;
-    heap_extract_min(&d1->waiting);
-    heap_extract_min(&d2->waiting);
-    pthread_mutex_unlock(&d2->lock);
-    pthread_mutex_unlock(&d1->lock);
-    log_state(sim, c->id, "has taken a dognle");
-    log_state(sim, c->id, "has taken a dognle");
+	// consistent lock ordering by pointer address to prevent deadlock
+	if (c->left < c->right)
+	{
+		d1 = c->left;
+		d2 = c->right;
+	}
+	else
+	{
+		d1 = c->right;
+		d2 = c->left;
+	}
+	pthread_mutex_lock(&d1->lock);
+	pthread_mutex_lock(&d2->lock);
+	now = elapsed_ms(sim);
+	while (!is_stoped(sim))
+	{
+		status = check_dongles(d1, d2);
+		if (status == 0
+			&& !is_cooldown_active(d1, d2, now)
+			&& check_periority(d1, d2, c->id))
+			break ; // all conditions satisfied — take both dongles
+		if (status == 1)
+		{
+			// both in use — wait on d1, release d2 temporarily
+			pthread_mutex_unlock(&d2->lock);
+			pthread_cond_wait(&d1->cond, &d1->lock);
+			pthread_mutex_lock(&d2->lock);
+		}
+		else if (status == 2)
+		{
+			// d1 in use — wait on d1, release d2 temporarily
+			pthread_mutex_unlock(&d2->lock);
+			pthread_cond_wait(&d1->cond, &d1->lock);
+			pthread_mutex_lock(&d2->lock);
+		}
+		else if (status == 3)
+		{
+			// d2 in use — wait on d2, release d1 temporarily
+			pthread_mutex_unlock(&d1->lock);
+			pthread_cond_wait(&d2->cond, &d2->lock);
+			pthread_mutex_lock(&d1->lock);
+		}
+		else
+		{
+			// neither in use but cooldown or priority blocking
+			// wait on whichever dongle has the farthest cooldown deadline
+			if (d1->available_at_ms >= d2->available_at_ms)
+				wait_on_dongle(sim, d1, d2, d1);
+			else
+				wait_on_dongle(sim, d2, d1, d2);
+		}
+		now = elapsed_ms(sim);
+	}
+	if (is_stoped(sim))
+	{
+		// cleanup: remove our requests from both heaps before exiting
+		heap_remove(&d1->waiting, c->id);
+		heap_remove(&d2->waiting, c->id);
+		pthread_mutex_unlock(&d2->lock);
+		pthread_mutex_unlock(&d1->lock);
+		return ;
+	}
+	d1->in_use = true;
+	d2->in_use = true;
+	heap_extract_min(&d1->waiting);
+	heap_extract_min(&d2->waiting);
+	pthread_mutex_unlock(&d2->lock);
+	pthread_mutex_unlock(&d1->lock);
+	log_state(sim, c->id, "has taken a dongle");
+	log_state(sim, c->id, "has taken a dongle");
 }
 
 void release_dongle(t_sim *sim, t_dongle *d)
