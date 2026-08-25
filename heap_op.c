@@ -54,10 +54,8 @@ void    heap_sift_down(t_heap *heap, int i)
 // return the min of the heap and also delet it and swift_down
 t_request    heap_extract_min(t_heap *heap)
 {
-    int i ;
     t_request min;
 
-    i = 0;
     min = peek_the_min(heap);
     heap_remove(heap, min.coder_id);
     return (min);
