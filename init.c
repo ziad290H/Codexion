@@ -55,6 +55,7 @@ bool init_coders(t_sim *sim)
 bool init_sim(t_sim *sim, t_config *cfg)
 {
 	sim->cfg = *cfg;
+	sim->start = false;
 	sim->stop = false;
 	sim->request_counter = 0;
 	sim->someone_burned_out = false;
@@ -94,21 +95,3 @@ void	destroy_sim(t_sim *sim)
 	pthread_mutex_destroy(&sim->log_lock);
 	pthread_mutex_destroy(&sim->state_lock);
 }
-
-
-
-
-// int main(void)
-// {
-// 	t_config cfg = {3, 800, 200, 200, 200, 3, 50, 0};
-// 	t_sim sim;
-
-// 	printf("ziaad");
-// 	if (!init_sim(&sim, &cfg))
-// 		return (1);
-// 	printf("coder1 left=%p right=%p\n", (void*)sim.coders[0].left, (void*)sim.coders[0].right);
-// 	printf("coder3 left=%p right=%p\n", (void*)sim.coders[2].left, (void*)sim.coders[2].right);
-// 	// verify coder3.right == coder1.left (wraparound)
-// 	destroy_sim(&sim);
-// 	return (0);
-// }

@@ -2,9 +2,7 @@
 
 void log_state(t_sim *sim, int coder_id,const char *msg)
 {
-    pthread_mutex_lock(&sim->log_lock);
-// state lock is locked just to read the stop in simulation
-// cause other threads read to it
+
     pthread_mutex_lock(&sim->state_lock);
     if (sim->stop)
     {
@@ -13,32 +11,12 @@ void log_state(t_sim *sim, int coder_id,const char *msg)
         // claude said it should revesre the order of how i locked them with how i
         // will unlocked them , idk why ?
         pthread_mutex_unlock(&sim->state_lock);
-        pthread_mutex_unlock(&sim->log_lock);
         return;
     }
     pthread_mutex_unlock(&sim->state_lock);
     fprintf(stdout, "%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
-// now we unlock the log_lock if any thred wants to write to it
-    pthread_mutex_unlock(&sim->log_lock);
 }
 
-// long    compute_priority_key(t_sim *sim, t_coder *c)
-// {
-//     pthread_mutex_lock(&sim->state_lock);
-//     sim->request_counter++;
-//     if (sim->cfg.scheduler == 0)
-//     {
-//         //case for fifo;
-//         return (sim->request_counter);
-//     }
-//     // edf
-//     else if (sim->cfg.scheduler != 0)
-//     {
-//         // printf("wee eeeee&&&&&");    
-//         return(c->last_compile_start + sim->cfg.time_to_burnout);
-//     }
-//     pthread_mutex_unlock(&sim->state_lock);
-// }
 
 int	check_dongles(t_dongle *d1, t_dongle *d2)
 {
@@ -152,8 +130,13 @@ void	acquire_dognles(t_sim *sim, t_coder *c)
 	heap_extract_min(&d2->waiting);
 	pthread_mutex_unlock(&d2->lock);
 	pthread_mutex_unlock(&d1->lock);
-	log_state(sim, c->id, "has taken a dongle");
-	log_state(sim, c->id, "has taken a dongle");
+	if (!sim->stop)
+	{
+		pthread_mutex_lock(&sim->log_lock);
+		log_state(sim, c->id, "has taken a dongle");
+		log_state(sim, c->id, "has taken a dongle");
+		pthread_mutex_unlock(&sim->log_lock);
+	}
 }
 
 void release_dongle(t_sim *sim, t_dongle *d)

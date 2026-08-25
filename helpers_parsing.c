@@ -48,7 +48,7 @@ bool	ft_parse_positive_field(const char *str, long min_val, long *out)
 		return (false);
 	if (*out < min_val)
 		return (false);
-	// if (*out > INT_MAX)
-	// 	return (false);
+	if (*out > INT_MAX)
+		return (false);
 	return (true);
 }

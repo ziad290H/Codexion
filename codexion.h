@@ -71,6 +71,7 @@ typedef struct s_sim
 	pthread_mutex_t	log_lock;
 	pthread_mutex_t	state_lock;   // protects stop flags / shared counters
 	bool			stop;
+	bool			start;
 	bool			someone_burned_out;
 	long			start_time_ms;
 	long			request_counter;

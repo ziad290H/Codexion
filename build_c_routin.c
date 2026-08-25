@@ -33,26 +33,27 @@ bool	do_compile(t_sim *sim, t_coder *c)
 	if ((c->id % 2) == 0)
     {
         pthread_mutex_lock(&c->right->lock);
-        heap_push(&c->right->waiting, req);
-        printf("coder %d pushed to heap %p\n", c->id, &c->right->waiting);
-        pthread_mutex_unlock(&c->right->lock);
-
         pthread_mutex_lock(&c->left->lock);
+        heap_push(&c->right->waiting, req);
         heap_push(&c->left->waiting, req);
-        printf("coder %d pushed to heap %p\n", c->id, &c->left->waiting);
         pthread_mutex_unlock(&c->left->lock);
+        pthread_mutex_unlock(&c->right->lock);
+        printf("coder %d pushed to heap %p\n", c->id, &c->right->waiting);
+        
+        printf("coder %d pushed to heap %p\n", c->id, &c->left->waiting);
     }
     else if ((c->id % 2) != 0)
     {
         pthread_mutex_lock(&c->left->lock);
-        heap_push(&c->left->waiting, req);
-        printf("coder %d pushed to heap %p\n", c->id, &c->left->waiting);
-        pthread_mutex_unlock(&c->left->lock);
-
         pthread_mutex_lock(&c->right->lock);
+        heap_push(&c->left->waiting, req);
+        
         heap_push(&c->right->waiting, req);
-        printf("coder %d pushed to heap %p\n", c->id, &c->right->waiting);
+        pthread_mutex_unlock(&c->left->lock);
         pthread_mutex_unlock(&c->right->lock);
+        
+        printf("coder %d pushed to heap %p\n", c->id, &c->left->waiting);
+        printf("coder %d pushed to heap %p\n", c->id, &c->right->waiting);
     }
     acquire_dognles(sim, c);
 	if (is_stoped(sim))
@@ -96,6 +97,15 @@ bool done_compiling(t_sim *s,t_coder *c)
         return (true);
     return (false);
 }
+bool is_start(t_sim *sim)
+{
+    bool status;
+
+    pthread_mutex_lock(&sim->state_lock);
+    status = sim->start;
+    pthread_mutex_unlock(&sim->state_lock);
+    return (status);
+}
 
 void *coder_routine(void *arg)
 {
@@ -104,7 +114,12 @@ void *coder_routine(void *arg)
     // you mean here treat this adress of arg as a pointer to t_coder
     c = (t_coder *)arg;
     s = c->sim;
-
+    while (!is_start(s))
+        usleep(500);
+    if (is_stoped(s))
+        return (NULL);
+    if (c -> id % 2 == 0)
+        smarte_sleep(s, (s->cfg.time_to_compile + s->cfg.dongle_cooldown) / 2);
     while (!is_stoped(s))
     {
         if (done_compiling(s, c))
