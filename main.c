@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:31:08 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/26 23:54:34 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/26 23:58:30 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,14 @@ pthread_t	creat_monitor(t_sim *sim)
 	return (monitor_tid);
 }
 
-void joining_and_freeing(t_sim *sim, int	i, pthread_t monitor_tid)
+void	joining_and_freeing(t_sim *sim, int i, pthread_t monitor_tid)
 {
 	int	j;
 
 	if (!sim->fail_monitor)
 	{
 		pthread_mutex_lock(&sim->state_lock);
-		sim->start =  true;
+		sim->start = true;
 		pthread_mutex_unlock(&sim->state_lock);
 	}
 	j = 0;
@@ -82,21 +82,21 @@ void joining_and_freeing(t_sim *sim, int	i, pthread_t monitor_tid)
 int	main(int argc, char **argv)
 {
 	t_config	config;
-    int			i;
+	int			i;
 	t_sim		sim;
-    pthread_t	monitor_tid;
+	pthread_t	monitor_tid;
 
 	if (argc != 9)
 	{
 		fprintf(stderr, "wrong usage of arguments");
-		return (1) ;
+		return (1);
 	}
-    if (!parsing(argv, &config))
-        return (1);
+	if (!parsing(argv, &config))
+		return (1);
 	if (!init_sim(&sim, &config))
 	{
 		fprintf(stderr, "init failed\n");
-		return(1) ;
+		return (1);
 	}
 	i = creat_threads(&sim);
 	if (i == -1)
@@ -104,5 +104,5 @@ int	main(int argc, char **argv)
 	monitor_tid = creat_monitor(&sim);
 	joining_and_freeing(&sim, i, monitor_tid);
 	if (sim.fail_monitor)
-		return (1) ;
+		return (1);
 }

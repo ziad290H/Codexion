@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:18 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/26 14:30:20 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/27 00:34:26 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void *monitor_routine(void *arg)
 {
     t_sim *sim;
+    int     i;
 
     sim = (t_sim *)arg;
     while(true)
@@ -25,6 +26,14 @@ void *monitor_routine(void *arg)
             break;
         usleep(1000);
     }
+    i = 0;
+	while (i < sim->cfg.num_coders)
+	{
+		pthread_mutex_lock(&sim->dongles[i].lock);
+		pthread_cond_broadcast(&sim->dongles[i].cond);
+		pthread_mutex_unlock(&sim->dongles[i].lock);
+		i++;
+	}
     return (NULL);
 }
 

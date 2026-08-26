@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:29:52 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/26 14:29:58 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/27 00:25:23 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ void	acquire_dognles(t_sim *sim, t_coder *c)
 	while (!is_stoped(sim))
 	{
 		status = check_dongles(d1, d2);
-        //printf(" status %d\n", status);
 		if (status == 0
 			&& !is_cooldown_active(d1, d2, now)
 			&& check_periority(d1, d2, c->id))
