@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   helper_dongle.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/26 14:29:52 by zdaouari          #+#    #+#             */
+/*   Updated: 2026/08/26 14:29:58 by zdaouari         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 void log_state(t_sim *sim, int coder_id,const char *msg)
@@ -54,7 +66,6 @@ void	acquire_dognles(t_sim *sim, t_coder *c)
 	long		now;
 	int			status;
 
-	// consistent lock ordering by pointer address to prevent deadlock
 	if (c->left < c->right)
 	{
 		d1 = c->left;
@@ -65,12 +76,8 @@ void	acquire_dognles(t_sim *sim, t_coder *c)
 		d1 = c->right;
 		d2 = c->left;
 	}
-    //printf("coder %d willing to lokc %p &d1->lock\n", c->id, &d1->lock);
 	pthread_mutex_lock(&d1->lock);
-	//printf("coder %d has  locked %p &d->lock\n", c->id, &d1->lock);
-    //printf("coder %d willing to lokc %p &d2->lock\n", c->id, &d2->lock);
     pthread_mutex_lock(&d2->lock);
-	//printf("coder %d has lokc %p &d->lock\n", c->id, &d2->lock);
     now = elapsed_ms(sim);
 	while (!is_stoped(sim))
 	{

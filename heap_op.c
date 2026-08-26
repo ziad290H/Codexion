@@ -1,31 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heap_op.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/26 14:30:34 by zdaouari          #+#    #+#             */
+/*   Updated: 2026/08/26 15:02:56 by zdaouari         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
-bool heap_less(t_request *a, t_request *b)
+bool	heap_less(t_request *a, t_request *b)
 {
-    if (a->key != b->key)
-        return (a->key <= b->key);
-    return  (a->seq < b ->seq);
+	if (a->key != b->key)
+		return (a->key <= b->key);
+	return (a->seq < b ->seq);
 }
 
-void    heap_push(t_heap *heap, t_request a)
+void	heap_push(t_heap *heap, t_request a)
 {
-    int i;
+	int	i;	
+	int	parent;
 
-    int parent;
-    
-    heap->items[heap->size] = a;
-    i = heap->size;
-    heap->size++;
-
-    while(i > 0)
-    {
-        parent = (i - 1) / 2;
-        if (!(heap_less(&heap->items[i], &heap->items[parent])))
-        {
-            break;
-        }
-            heap_swap(&heap->items[i], &heap->items[parent]);
-        i = parent;
+	heap->items[heap->size] = a;
+	i = heap->size;
+	heap->size++;
+	while (i > 0)
+	{
+		parent = (i - 1) / 2;
+		if (!(heap_less(&heap->items[i], &heap->items[parent])))
+		{
+			break;
+		}
+		heap_swap(&heap->items[i], &heap->items[parent]);
+		i = parent;
     }
 }
 
@@ -36,84 +46,77 @@ void    heap_sift_down(t_heap *heap, int i)
     int smallest;
     
     while (true)
+	{
+		left = (2 * i) + 1;
+		right = (2 * 2) + 2;
+		smallest = i;
+		if (left < heap->size && heap_less(&heap->items[left], &heap->items[i]))
+		    smallest = left;
+		if (right < heap->size && heap_less(&heap->items[right], &heap->items[i]))
+		    smallest = right;
+		if (smallest == i)
+		    break;
+		heap_swap(&heap->items[i], &heap->items[smallest]);
+		i = smallest;
+	}
+}
+
+t_request	heap_extract_min(t_heap *heap)
+{
+	t_request min;
+	
+	min = peek_the_min(heap);
+	heap_remove(heap, min.coder_id);
+	return (min);
+}
+
+void	heap_remove(t_heap *heap, int coder_id)
+{
+	int i;
+	int idx;	
+	idx = -1;
+	i = 0;
+
+	while (i < heap->size)
+	{
+		if (heap->items[i].coder_id == coder_id)
+		{
+			idx = i;
+			break;
+		}
+		i++;
+	}
+	if (idx == -1)
+		return ;
+	heap->size--;
+	heap->items[idx] = heap->items[heap->size];
+	if (idx < heap->size)
+		heap_sift_down(heap, idx);
+}
+
+void	heap_swap(t_request *a, t_request *b)
+{
+	t_request	tmp;
+
+	tmp = *a;
+	*a   = *b;
+	*b = tmp;
+}
+
+bool	heap_is_empty(t_heap *heap)
+{
+	return (heap->size == 0);
+}
+
+t_request	peek_the_min(t_heap *heap)
+{
+	if (heap->size == 0)
     {
-        left = (2 * i) + 1;
-        right = (2 * 2) + 2;
-        smallest = i;
-        if (left < heap->size && heap_less(&heap->items[left], &heap->items[i]))
-            smallest = left;
-        if (right < heap->size && heap_less(&heap->items[right], &heap->items[i]))
-            smallest = right;
-        if (smallest == i)
-            break;
-        heap_swap(&heap->items[i], &heap->items[smallest]);
-        i = smallest;
-    }
-}
-
-// return the min of the heap and also delet it and swift_down
-t_request    heap_extract_min(t_heap *heap)
-{
-    t_request min;
-
-    min = peek_the_min(heap);
-    heap_remove(heap, min.coder_id);
-    return (min);
-}
-
-void heap_remove(t_heap *heap, int  coder_id)
-{
-    int i;
-    int idx;
-
-    idx = -1;
-    i = 0;
-
-    while (i < heap->size)
-    {
-        if (heap->items[i].coder_id == coder_id)
-        {
-            idx = i;
-            break;
-        }
-        i++;
-    }
-    if (idx == -1)
-        return ;
-    // overright the target with the last element so you can start swipping down till
-    // you make it in it s place
-    heap->size--;
-    heap->items[idx] = heap->items[heap->size];
-    if (idx < heap->size)
-        heap_sift_down(heap, idx);
-}
-
-void heap_swap(t_request *a, t_request *b)
-{
-    t_request   tmp;
-
-    tmp = *a;
-    *a   = *b;
-    *b = tmp;
-}
-
-bool heap_is_empty(t_heap *heap)
-{
-    return (heap->size == 0);
-}
-
-// see the min
-t_request    peek_the_min(t_heap *heap)
-{
-    if (heap->size == 0)
-    {
-        // return a sentinel/invalid request
-        t_request empty;
-        empty.coder_id = -1;
-        empty.key = LONG_MAX;
-        empty.seq = LONG_MAX;
-        return (empty);
-    }
-    //printf("\n\nheap : %d", heap->items[0].coder_id);
-    return (heap->items[0]);
+		t_request empty;
+		empty.coder_id = -1;
+		empty.key = LONG_MAX;
+		empty.seq = LONG_MAX;
+		return (empty);
+	}
+	return (heap->items[0]);
 }

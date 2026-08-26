@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/26 14:31:08 by zdaouari          #+#    #+#             */
+/*   Updated: 2026/08/26 14:41:44 by zdaouari         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 int	main(int argc, char **argv)
@@ -8,7 +20,7 @@ int	main(int argc, char **argv)
     pthread_t	monitor_tid;
 	bool		fail_monitor;
 	void		*result;
-	int		j;
+	int			j;
 
 	fail_monitor = false;
 	if (argc != 9)

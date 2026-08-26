@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/26 14:31:00 by zdaouari          #+#    #+#             */
+/*   Updated: 2026/08/26 14:46:24 by zdaouari         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 bool init_dongles(t_sim *sim)
@@ -19,9 +31,7 @@ bool init_dongles(t_sim *sim)
 		sim->dongles[i].waiting.items = malloc(sizeof(t_request) * 2);
 		if (!(sim->dongles[i].waiting.items))
 			return (false);
-		sim->dongles[i].granted_to = -1;
 		sim->dongles[i].waiting.size = 0;
-		sim->dongles[i].id = i + 1;
 		i++;
 	}
 
