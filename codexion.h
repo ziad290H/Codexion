@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:27 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/26 14:55:35 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/26 21:20:34 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ typedef struct s_sim
 	pthread_mutex_t	state_lock;
 	bool			stop;
 	bool			start;
+	bool			fail_monitor;
 	bool			someone_burned_out;
 	long			start_time_ms;
 	long			request_counter;

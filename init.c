@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:31:00 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/26 14:46:24 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/26 21:07:43 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ bool init_sim(t_sim *sim, t_config *cfg)
 	sim->start = false;
 	sim->stop = false;
 	sim->request_counter = 0;
+	sim->fail_monitor = false;
 	sim->someone_burned_out = false;
 	sim->start_time_ms = get_timesstamp_ms();
 	sim->dongles = NULL;

@@ -6,17 +6,17 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:34 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/26 15:02:56 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/26 20:33:17 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-bool	heap_less(t_request *a, t_request *b)
+bool	heap_less(t_request *child, t_request *parent)
 {
-	if (a->key != b->key)
-		return (a->key <= b->key);
-	return (a->seq < b ->seq);
+	if (child->key != parent->key)
+		return (child->key <= parent->key);
+	return (child->seq < parent ->seq);
 }
 
 void	heap_push(t_heap *heap, t_request a)
@@ -32,30 +32,32 @@ void	heap_push(t_heap *heap, t_request a)
 		parent = (i - 1) / 2;
 		if (!(heap_less(&heap->items[i], &heap->items[parent])))
 		{
-			break;
+			break ;
 		}
 		heap_swap(&heap->items[i], &heap->items[parent]);
 		i = parent;
-    }
+	}
 }
 
-void    heap_sift_down(t_heap *heap, int i)
+void	heap_sift_down(t_heap *heap, int i)
 {
-    int    left;
-    int    right;
-    int smallest;
-    
-    while (true)
+	int		left;
+	int		right;
+	int		smallest;
+
+	while (true)
 	{
 		left = (2 * i) + 1;
 		right = (2 * 2) + 2;
 		smallest = i;
-		if (left < heap->size && heap_less(&heap->items[left], &heap->items[i]))
-		    smallest = left;
-		if (right < heap->size && heap_less(&heap->items[right], &heap->items[i]))
-		    smallest = right;
+		if (left < heap->size
+			&& heap_less(&heap->items[left], &heap->items[i]))
+			smallest = left;
+		if (right < heap->size
+			&& heap_less(&heap->items[right], &heap->items[i]))
+			smallest = right;
 		if (smallest == i)
-		    break;
+			break ;
 		heap_swap(&heap->items[i], &heap->items[smallest]);
 		i = smallest;
 	}
@@ -63,8 +65,8 @@ void    heap_sift_down(t_heap *heap, int i)
 
 t_request	heap_extract_min(t_heap *heap)
 {
-	t_request min;
-	
+	t_request	min;
+
 	min = peek_the_min(heap);
 	heap_remove(heap, min.coder_id);
 	return (min);
@@ -72,17 +74,17 @@ t_request	heap_extract_min(t_heap *heap)
 
 void	heap_remove(t_heap *heap, int coder_id)
 {
-	int i;
-	int idx;	
+	int	i;
+	int	idx;
+
 	idx = -1;
 	i = 0;
-
 	while (i < heap->size)
 	{
 		if (heap->items[i].coder_id == coder_id)
 		{
 			idx = i;
-			break;
+			break ;
 		}
 		i++;
 	}
@@ -92,31 +94,4 @@ void	heap_remove(t_heap *heap, int coder_id)
 	heap->items[idx] = heap->items[heap->size];
 	if (idx < heap->size)
 		heap_sift_down(heap, idx);
-}
-
-void	heap_swap(t_request *a, t_request *b)
-{
-	t_request	tmp;
-
-	tmp = *a;
-	*a   = *b;
-	*b = tmp;
-}
-
-bool	heap_is_empty(t_heap *heap)
-{
-	return (heap->size == 0);
-}
-
-t_request	peek_the_min(t_heap *heap)
-{
-	if (heap->size == 0)
-    {
-		t_request empty;
-		empty.coder_id = -1;
-		empty.key = LONG_MAX;
-		empty.seq = LONG_MAX;
-		return (empty);
-	}
-	return (heap->items[0]);
 }
