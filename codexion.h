@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:27 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/26 21:20:34 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/27 20:51:30 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,13 @@ t_request	heap_extract_min(t_heap *heap);
 void		heap_push(t_heap *heap, t_request a);
 void		heap_sift_down(t_heap *heap, int i);
 bool		heap_less(t_request *a, t_request *b);
-void		wait_on_dongle(t_sim *sim, t_dongle *held,
-				t_dongle *released, t_dongle *target);
+void		wait_on_dongle(t_sim *sim, t_dongle *released, t_dongle *target);
+bool		beginning(t_sim *s, t_coder *c);
+bool		is_start(t_sim *sim);
+bool		done_compiling(t_sim *s, t_coder *c);
+bool		is_stoped(t_sim *sim);
 
+bool		is_cooldown_active(t_dongle *d1, t_dongle *d2, long now);
+int			check_dongles(t_dongle *d1, t_dongle *d2);
+void		handle_status(int status, t_dongle *d1, t_dongle *d2);
 #endif

@@ -6,35 +6,32 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:51 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/26 14:30:52 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/27 20:59:36 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-bool ft_atoi(const char *str, long *out)
+bool	ft_atoi(const char *str, long *out)
 {
-    int i;
-    long result;
+	int		i;
+	long	result;
 
-    if (!str || str[0] == '\0')
-        return (false);
-    i = 0;
-    result= 0;
-    
-    while (str[i])
-    {
-
-        if (str[i] < '0' || str[i] > '9')
-            return (false);
-        if (result > (LONG_MAX- (str[i] - '0')) / 10)
-            return (false);
-        result = result * 10 + (str[i] - '0');
-        i++;
-    }
-    *out = result;
-
-    return (true);
+	if (!str || str[0] == '\0')
+		return (false);
+	i = 0;
+	result = 0;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (false);
+		if (result > (LONG_MAX - (str[i] - '0')) / 10)
+			return (false);
+		result = result * 10 + (str[i] - '0');
+		i++;
+	}
+	*out = result;
+	return (true);
 }
 
 bool	ft_parse_scheduler(const char *str, int *out_sched)

@@ -6,21 +6,21 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:09 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/27 00:36:44 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/27 18:41:25 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-t_request prepare_the_request(t_coder *coder, t_sim *sim)
+t_request	prepare_the_request(t_coder *coder, t_sim *sim)
 {
-	t_request req;
+	t_request	req;
 
 	pthread_mutex_lock(&sim->state_lock);
 	sim->request_counter++;
 	req.coder_id = coder->id;
 	if (sim->cfg.scheduler == 0)
-    {
+	{
 		req.key = sim->request_counter;
 	}
 	else
@@ -32,9 +32,9 @@ t_request prepare_the_request(t_coder *coder, t_sim *sim)
 	return (req);
 }
 
-void	pushing(t_coder *c, t_sim *sim)
+void	pushing_to_heap(t_coder *c, t_sim *sim)
 {
-	t_request req;
+	t_request	req;
 
 	req = prepare_the_request(c, sim);
 	if ((c->id % 2) == 0)
@@ -51,19 +51,19 @@ void	pushing(t_coder *c, t_sim *sim)
 		pthread_mutex_lock(&c->left->lock);
 		pthread_mutex_lock(&c->right->lock);
 		heap_push(&c->left->waiting, req);
-			
 		heap_push(&c->right->waiting, req);
 		pthread_mutex_unlock(&c->left->lock);
 		pthread_mutex_unlock(&c->right->lock);
 	}
 }
+
 bool	do_compile(t_sim *sim, t_coder *c)
 {
 	if (c->left == c->right)
 		return (false);
 	if (is_stoped(sim))
 		return (false);
-	pushing(c, sim);
+	pushing_to_heap(c, sim);
 	acquire_dognles(sim, c);
 	if (is_stoped(sim))
 		return (false);
@@ -72,10 +72,8 @@ bool	do_compile(t_sim *sim, t_coder *c)
 	pthread_mutex_unlock(&sim->state_lock);
 	log_state(sim, c->id, "is compiling");
 	smarte_sleep(sim, sim->cfg.time_to_compile);
-
 	release_dongle(sim, c->right);
 	release_dongle(sim, c->left);
-
 	if (!is_stoped(sim))
 	{
 		pthread_mutex_lock(&sim->state_lock);
@@ -85,69 +83,27 @@ bool	do_compile(t_sim *sim, t_coder *c)
 	return (true);
 }
 
-bool is_stoped(t_sim *sim)
+void	*coder_routine(void *arg)
 {
-	bool	val;
+	t_coder	*c;
+	t_sim	*s;
 
-	pthread_mutex_lock(&sim->state_lock);
-	val = sim->stop;
-	pthread_mutex_unlock(&sim->state_lock);
-	return(val);
-}
-
-bool done_compiling(t_sim *s,t_coder *c)
-{
-	int target;
-
-	target = s->cfg.compiles_required;
-	if (c->compiles_done >= target)
-	    return (true);
-	return (false);
-}
-
-bool is_start(t_sim *sim)
-{
-	bool status;
-	
-	pthread_mutex_lock(&sim->state_lock);
-	status = sim->start;
-	pthread_mutex_unlock(&sim->state_lock);
-	return (status);
-}
-
-bool	beginning(t_sim *s, t_coder *c)
-{
-	while (!is_start(s))
-		usleep(500);
-	if (is_stoped(s))
-		return (false);
-	if (c -> id % 2 == 0)
-		smarte_sleep(s, (s->cfg.time_to_compile + s->cfg.dongle_cooldown) / 2);
-	return (true);
-}
-
-void *coder_routine(void *arg)
-{
-	t_coder *c;
-	t_sim *s;
 	c = (t_coder *)arg;
 	s = c->sim;
-
-	if(beginning(s, c))
+	if (beginning(s, c))
 	{
 		while (!is_stoped(s))
 		{
 			if (done_compiling(s, c))
-				break;
-			if(!do_compile(s, c))
-				break;
+				break ;
+			if (!do_compile(s, c))
+				break ;
 			if (is_stoped(s))
-				break;
+				break ;
 			log_state(s, c->id, "is debugging");
-			smarte_sleep(s, s->cfg.time_to_debug );
-	
+			smarte_sleep(s, s->cfg.time_to_debug);
 			if (is_stoped(s))
-				break;
+				break ;
 			log_state(s, c->id, "is refactoring");
 			smarte_sleep(s, s->cfg.time_to_refactor);
 		}
