@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:09 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/27 18:41:25 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/28 10:42:23 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,9 @@ bool	do_compile(t_sim *sim, t_coder *c)
 	pthread_mutex_lock(&sim->state_lock);
 	c->last_compile_start = elapsed_ms(sim);
 	pthread_mutex_unlock(&sim->state_lock);
+	pthread_mutex_lock(&sim->log_lock);
 	log_state(sim, c->id, "is compiling");
+	pthread_mutex_unlock(&sim->log_lock);
 	smarte_sleep(sim, sim->cfg.time_to_compile);
 	release_dongle(sim, c->right);
 	release_dongle(sim, c->left);
@@ -100,11 +102,15 @@ void	*coder_routine(void *arg)
 				break ;
 			if (is_stoped(s))
 				break ;
+			pthread_mutex_lock(&s->log_lock);
 			log_state(s, c->id, "is debugging");
+			pthread_mutex_unlock(&s->log_lock);
 			smarte_sleep(s, s->cfg.time_to_debug);
 			if (is_stoped(s))
 				break ;
+			pthread_mutex_lock(&s->log_lock);
 			log_state(s, c->id, "is refactoring");
+			pthread_mutex_unlock(&s->log_lock);
 			smarte_sleep(s, s->cfg.time_to_refactor);
 		}
 	}

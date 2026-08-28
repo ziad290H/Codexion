@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:27 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/27 20:51:30 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/27 21:12:48 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-# include <sys/time.h>
-# include <unistd.h>
 # include <unistd.h>
 # include <sys/time.h>
 // define LONG_MAX = 9223372036854775807

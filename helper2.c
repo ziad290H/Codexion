@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 20:22:14 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/27 20:28:09 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/28 10:31:02 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,17 @@
 void	log_state(t_sim *sim, int coder_id, const char *msg)
 {
 	pthread_mutex_lock(&sim->state_lock);
-	if (sim->stop)
+	if (sim->stop && strcmp(msg, "burned out") == 0)
 	{
-		if (strcmp(msg, "burned out") == 0)
-			printf("%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
+		printf("%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
 		pthread_mutex_unlock(&sim->state_lock);
 		return ;
 	}
+		
+	if (!sim->stop)
+		fprintf(stdout, "%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
 	pthread_mutex_unlock(&sim->state_lock);
-	fprintf(stdout, "%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
+
 }
 
 int	check_dongles(t_dongle *d1, t_dongle *d2)

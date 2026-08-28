@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:18 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/27 20:56:53 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/28 10:20:11 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,9 @@ bool	check_burnout(t_sim *sim)
 			sim->stop = true;
 			sim->someone_burned_out = true;
 			pthread_mutex_unlock(&sim->state_lock);
+			pthread_mutex_lock(&sim->log_lock);
 			log_state(sim, sim->coders[i].id, "burned out");
+			pthread_mutex_unlock(&sim->log_lock);
 			return (true);
 		}
 		i++;

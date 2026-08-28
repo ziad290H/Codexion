@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:31:20 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/27 18:56:23 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/27 21:15:11 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static bool	parse_coders(char **argv, t_config *config)
 
 	if (!ft_parse_positive_field(argv[1], 1, &tmp))
 	{
-		fprintf(stderr, "number_of_coders should be positiv int");
+		fprintf(stderr, "number_of_coders should be positiv int bigger than 0");
 		return (false);
 	}
 	if (tmp > INT_MAX)

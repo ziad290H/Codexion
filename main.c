@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:31:08 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/26 23:58:30 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/28 09:57:06 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ pthread_t	creat_monitor(t_sim *sim)
 		sim->stop = true;
 		pthread_mutex_unlock(&sim->state_lock);
 	}
+	sim->start_time_ms = get_timesstamp_ms();
 	return (monitor_tid);
 }
 

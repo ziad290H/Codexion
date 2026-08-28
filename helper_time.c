@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:45 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/27 21:03:54 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/28 12:32:15 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,27 @@ long	elapsed_ms(t_sim *sim)
 	return (get_timesstamp_ms() - sim->start_time_ms);
 }
 
-void	wait_on_dongle(t_sim *sim, t_dongle *d1, t_dongle *d2)
+static void	calculate_deadline(t_sim *sim, t_dongle *target, t_dongle *released,struct timespec	deadline)
 {
 	long			remaining_ms;
 	struct timeval	now_tv;
+	
+	
+	remaining_ms = target->available_at_ms - elapsed_ms(sim);
+	if (remaining_ms < 0)
+		remaining_ms = 0;
+	gettimeofday(&now_tv, NULL);
+	deadline.tv_sec = now_tv.tv_sec + (remaining_ms / 1000);
+	deadline.tv_nsec = (now_tv.tv_usec * 1000L)
+		+ ((remaining_ms % 1000) * 1000000L);
+	if (deadline.tv_nsec >= 1000000000L)
+	{
+		deadline.tv_sec += 1;
+		deadline.tv_nsec -= 1000000000L;
+	}
+}
+void	wait_on_dongle(t_sim *sim, t_dongle *d1, t_dongle *d2)
+{
 	struct timespec	deadline;
 	t_dongle		*released;
 	t_dongle		*target;
@@ -43,18 +60,7 @@ void	wait_on_dongle(t_sim *sim, t_dongle *d1, t_dongle *d2)
 		target = d2;
 		released = d1;
 	}
-	remaining_ms = target->available_at_ms - elapsed_ms(sim);
-	if (remaining_ms < 0)
-		remaining_ms = 0;
-	gettimeofday(&now_tv, NULL);
-	deadline.tv_sec = now_tv.tv_sec + (remaining_ms / 1000);
-	deadline.tv_nsec = (now_tv.tv_usec * 1000L)
-		+ ((remaining_ms % 1000) * 1000000L);
-	if (deadline.tv_nsec >= 1000000000L)
-	{
-		deadline.tv_sec += 1;
-		deadline.tv_nsec -= 1000000000L;
-	}
+	calculate_deadline(target, released, sim, &deadline);
 	pthread_mutex_unlock(&released->lock);
 	pthread_cond_timedwait(&target->cond, &target->lock, &deadline);
 	pthread_mutex_lock(&released->lock);
