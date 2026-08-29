@@ -1,21 +1,22 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2026/08/26 14:31:14 by zdaouari          #+#    #+#              #
-#    Updated: 2026/08/26 14:31:15 by zdaouari         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME = ./codexion
 
 CC = cc
-#CFLAGS = -Wall -Wextra -Werror -g
 
-SRCS = $(wildcard *.c)
+CFLAGS = -Wall -Wextra -Werror -g
+
+SRCS = src/build_c_routin.c \
+	   src/build_m_routine.c \
+	   src/heap_help.c \
+	   src/heap_op.c \
+	   src/helper_c_build2.c \
+	   src/helper2.c \
+	   src/helper_c_build.c \
+	   src/helpers_parsing.c \
+	   src/helper_time.c \
+	   src/init.c \
+	   src/main.c \
+	   src/parsing.c
+
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
