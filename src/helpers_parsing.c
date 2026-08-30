@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:51 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/27 20:59:36 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/30 20:26:18 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ bool	ft_atoi(const char *str, long *out)
 	{
 		if (str[i] < '0' || str[i] > '9')
 			return (false);
-		if (result > (LONG_MAX - (str[i] - '0')) / 10)
+		if (result > (9223372036854775807 - (str[i] - '0')) / 10)
 			return (false);
 		result = result * 10 + (str[i] - '0');
 		i++;
@@ -57,7 +57,7 @@ bool	ft_parse_positive_field(const char *str, long min_val, long *out)
 		return (false);
 	if (*out < min_val)
 		return (false);
-	if (*out > INT_MAX)
+	if (*out > 2147483647)
 		return (false);
 	return (true);
 }

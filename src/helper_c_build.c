@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:29:52 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/29 16:51:51 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/30 20:11:49 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ bool	check_periority(t_dongle *d1, t_dongle *d2, int coder_id)
 
 	per_d1 = peek_the_min(&d1->waiting).coder_id;
 	per_d2 = peek_the_min(&d2->waiting).coder_id;
-	printf(" heap %p size is : %d\n", &d1->waiting, d1->waiting.size);
-	printf(" heap %p size is : %d\n", &d2->waiting, d2->waiting.size);
 	return (per_d1 == coder_id && per_d2 == coder_id);
 }
 

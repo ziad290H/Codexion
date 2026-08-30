@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:34 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/26 20:33:17 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/30 20:35:51 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,14 @@ void	heap_sift_down(t_heap *heap, int i)
 	}
 }
 
-t_request	heap_extract_min(t_heap *heap)
+void	heap_extract_min(t_heap *heap)
 {
 	t_request	min;
 
 	min = peek_the_min(heap);
+	if (min.coder_id == -1)
+		return ;
 	heap_remove(heap, min.coder_id);
-	return (min);
 }
 
 void	heap_remove(t_heap *heap, int coder_id)

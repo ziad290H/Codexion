@@ -75,10 +75,19 @@ All 8 arguments are mandatory. All time values are in milliseconds.
 
 ## Resources
 
- -  most of concepts that I learned is from this book "The Linux Programming inTerface"
-    link : https://www.bogotobogo.com/Linux/files/the-linux-programming-interface-1.pdf
- - how mutex works : https://www.youtube.com/watch?v=1tZhmTnk-vc
- - geeksforgeeks for theorics : https://www.geeksforgeeks.org/operating-systems/difference-between-process-and-thread/
+ -  most of concepts that I learned is from this book ["The Linux Programming inTerface"](https://www.bogotobogo.com/Linux/files/the-linux-programming-interface-1.pdf)
+ - [how mutex works](https://www.youtube.com/watch?v=1tZhmTnk-vc)
+ - [geeksforgeeks for theorics](https://www.geeksforgeeks.org/operating-systems/difference-between-process-and-thread/)
+ - [Coffman Conditions — Wikipedia](https://en.wikipedia.org/wiki/Deadlock#Necessary_conditions)
+
+- [Binary Heap — Wikipedia](https://en.wikipedia.org/wiki/Binary_heap)
+ ### AI usage
+
+Claude (Anthropic) was used throughout this project for the following:
+
+- **Concept explanation**: explaining POSIX thread primitives (`pthread_cond_wait`,
+  `pthread_cond_timedwait`, mutex semantics, context switching internals) in depth,
+  including edge cases lost wakeups, and lock ordering.
 ---
 
 ## Blocking Cases Handled
@@ -88,7 +97,6 @@ All 8 arguments are mandatory. All time values are in milliseconds.
 The classic deadlock scenario: every coder holds one dongle and waits for the other,
 forming a circular chain where nobody can proceed. Codexion breaks the
 **circular wait** condition (one of Coffman's four necessary conditions) by enforcing
-- **no coder take a dongle if he cant take both dongles together**
 
 - **locking the dongles with a mutex, making impossible for other to take it by force**
 
@@ -289,33 +297,3 @@ pthread_mutex_unlock(&sim->state_lock);
 
 ---
 
-## Resources
-
-### Classic references
-
-- [POSIX Threads Programming — Blaise Barney, LLNL](https://hpc-tutorials.llnl.gov/posix/)
-- [The Little Book of Semaphores — Allen B. Downey](https://greenteapress.com/wp/semaphores/)
-- [Dining Philosophers Problem — Wikipedia](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
-- [Earliest Deadline First Scheduling — Wikipedia](https://en.wikipedia.org/wiki/Earliest_deadline_first_scheduling)
-- [pthread_cond_timedwait — man page](https://man7.org/linux/man-pages/man3/pthread_cond_timedwait.3p.html)
-- [Coffman Conditions — Wikipedia](https://en.wikipedia.org/wiki/Deadlock#Necessary_conditions)
-- [Binary Heap — Wikipedia](https://en.wikipedia.org/wiki/Binary_heap)
-
-### AI usage
-
-Claude (Anthropic) was used throughout this project for the following:
-
-- **Concept explanation**: explaining POSIX thread primitives (`pthread_cond_wait`,
-  `pthread_cond_timedwait`, mutex semantics, context switching internals) in depth,
-  including edge cases like spurious wakeups, lost wakeups, and lock ordering.
-- **Bug diagnosis**: identifying specific bugs in concurrent code (uninitialized
-  variables used before assignment, wrong lock held during `cond_wait`, double-lock
-  on same mutex, inverted while conditions causing spin loops).
-- **Architecture discussion**: discussing trade-offs between one-at-a-time vs atomic
-  two-dongle acquisition, per-dongle vs global heap, FIFO vs EDF priority strategies.
-- **Code review**: reviewing function signatures, mutex usage, heap operations, and
-  argument parsing for correctness and safety.
-
-All AI-generated explanations and code suggestions were reviewed, understood, tested,
-and adapted before being used. No code was copied blindly — every function in this
-project is understood and can be explained line by line.

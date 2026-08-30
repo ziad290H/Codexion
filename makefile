@@ -1,8 +1,8 @@
-NAME = ./codexion
+NAME = codexion
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -pthread
 
 SRCS = src/build_c_routin.c \
 	   src/build_m_routine.c \

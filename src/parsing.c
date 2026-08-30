@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:31:20 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/27 21:15:11 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/30 20:36:31 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static bool	parse_coders(char **argv, t_config *config)
 		fprintf(stderr, "number_of_coders should be positiv int bigger than 0");
 		return (false);
 	}
-	if (tmp > INT_MAX)
+	if (tmp > 2147483647)
 	{
 		printf("number of coders should not exceed the range INT_MAX\n");
 		return (false);
@@ -64,7 +64,7 @@ static bool	parse_compiles(char **argv, t_config *config)
 		printf("compiles_required should be a positiv int");
 		return (false);
 	}
-	if (tmp > INT_MAX)
+	if (tmp > 2147483647)
 	{
 		printf("compiles_required should be a valid positiv int");
 		return (false);

@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:45 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/29 20:19:50 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/30 21:23:02 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ struct timespec	calculate_deadline(t_sim *sim, t_dongle *target)
 	struct timeval	now_tv;
 	struct timespec	deadline;
 
-	remaining_ms = target->available_at_ms - elapsed_ms(sim); // microsecends
+	remaining_ms = target->available_at_ms - elapsed_ms(sim);
 	if (remaining_ms < 0)
 		remaining_ms = 0;
 	gettimeofday(&now_tv, NULL);

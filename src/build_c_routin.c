@@ -6,15 +6,15 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:09 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/29 20:17:23 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/30 21:25:40 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-t_request prepare_the_request(t_coder *coder, t_sim *sim)
+t_request	prepare_the_request(t_coder *coder, t_sim *sim)
 {
-	t_request req;
+	t_request	req;
 
 	pthread_mutex_lock(&sim->state_lock);
 	sim->request_counter++;
@@ -32,9 +32,9 @@ t_request prepare_the_request(t_coder *coder, t_sim *sim)
 	return (req);
 }
 
-void pushing_to_heap(t_coder *c, t_sim *sim)
+void	pushing_to_heap(t_coder *c, t_sim *sim)
 {
-	t_request req;
+	t_request	req;
 
 	req = prepare_the_request(c, sim);
 	if ((c->id % 2) == 0)
@@ -57,7 +57,7 @@ void pushing_to_heap(t_coder *c, t_sim *sim)
 	}
 }
 
-bool do_compile(t_sim *sim, t_coder *c)
+bool	do_compile(t_sim *sim, t_coder *c)
 {
 	if (c->left == c->right)
 		return (false);
@@ -85,10 +85,10 @@ bool do_compile(t_sim *sim, t_coder *c)
 	return (true);
 }
 
-void *coder_routine(void *arg)
+void	*coder_routine(void *arg)
 {
-	t_coder *c;
-	t_sim *s;
+	t_coder	*c;
+	t_sim	*s;
 
 	c = (t_coder *)arg;
 	s = c->sim;
@@ -97,9 +97,9 @@ void *coder_routine(void *arg)
 		while (!is_stoped(s))
 		{
 			if (done_compiling(s, c))
-				break;
+				break ;
 			if (!do_compile(s, c))
-				break;
+				break ;
 			pthread_mutex_lock(&s->log_lock);
 			log_state(s, c->id, "is debugging");
 			pthread_mutex_unlock(&s->log_lock);

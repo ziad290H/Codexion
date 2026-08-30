@@ -6,14 +6,13 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:27 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/27 21:12:48 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/30 20:41:47 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CODEXION_H
 # define CODEXION_H
 
-# include <limits.h>
 # include <stdbool.h>
 # include <pthread.h>
 # include <stdio.h>
@@ -21,7 +20,6 @@
 # include <string.h>
 # include <unistd.h>
 # include <sys/time.h>
-// define LONG_MAX = 9223372036854775807
 
 typedef struct s_config
 {
@@ -106,7 +104,7 @@ void		destroy_sim(t_sim *sim);
 t_request	peek_the_min(t_heap *heap);
 void		heap_swap(t_request *a, t_request *b);
 void		heap_remove(t_heap *heap, int coder_id);
-t_request	heap_extract_min(t_heap *heap);
+void		heap_extract_min(t_heap *heap);
 void		heap_push(t_heap *heap, t_request a);
 void		heap_sift_down(t_heap *heap, int i);
 bool		heap_less(t_request *a, t_request *b);

@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 20:34:28 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/26 20:35:33 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/30 20:33:21 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ t_request	peek_the_min(t_heap *heap)
 	if (heap->size == 0)
 	{
 		empty.coder_id = -1;
-		empty.key = LONG_MAX;
-		empty.seq = LONG_MAX;
+		empty.key = -1;
+		empty.seq = -1;
 		return (empty);
 	}
 	return (heap->items[0]);
