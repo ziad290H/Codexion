@@ -31,7 +31,7 @@ struct timespec	calculate_deadline(t_sim *sim, t_dongle *target)
 	struct timeval	now_tv;
 	struct timespec	deadline;
 
-	remaining_ms = target->available_at_ms - elapsed_ms(sim);
+	remaining_ms = target->available_at_ms - elapsed_ms(sim); // microsecends
 	if (remaining_ms < 0)
 		remaining_ms = 0;
 	gettimeofday(&now_tv, NULL);

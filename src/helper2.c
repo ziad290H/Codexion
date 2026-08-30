@@ -17,7 +17,6 @@ void	log_state(t_sim *sim, int coder_id, const char *msg)
 	if (sim->stop && strcmp(msg, "burned out") == 0)
 	{
 		fprintf(stdout, "%ld %d %s\n", elapsed_ms(sim), coder_id, msg);
-		pthread_mutex_unlock(&sim->state_lock);
 		return ;
 	}
 	if (!sim->stop)
