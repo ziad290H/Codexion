@@ -21,7 +21,7 @@ OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) src/codexion.h
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 clean:

@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:31:00 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/30 20:31:45 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/08/31 16:27:08 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,11 +74,15 @@ bool	init_sim(t_sim *sim, t_config *cfg)
 	if (pthread_mutex_init(&sim->log_lock, NULL) != 0)
 		return (false);
 	if (pthread_mutex_init(&sim->state_lock, NULL) != 0)
+	{
+		pthread_mutex_destroy(&sim->log_lock);
 		return (false);
-	if (!init_dongles(sim))
+	}
+	if (!init_dongles(sim) || !init_coders(sim))
+	{
+		destroy_sim(sim);
 		return (false);
-	if (!init_coders(sim))
-		return (false);
+	}
 	return (true);
 }
 
