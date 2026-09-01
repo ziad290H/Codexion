@@ -21,6 +21,8 @@ bool	ft_atoi(const char *str, long *out)
 		return (false);
 	i = 0;
 	result = 0;
+	if (str[i] == '+')
+		i++;
 	while (str[i])
 	{
 		if (str[i] < '0' || str[i] > '9')

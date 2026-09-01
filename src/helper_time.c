@@ -83,7 +83,12 @@ void	smarte_sleep(t_sim *sim, long time)
 		else
 			sleep_ms = 10;
 		usleep(sleep_ms * 1000);
+		pthread_mutex_lock(&sim->state_lock);
 		if (sim->stop)
+		{
+			pthread_mutex_unlock(&sim->state_lock);
 			break ;
+		}
+		pthread_mutex_unlock(&sim->state_lock);
 	}
 }
