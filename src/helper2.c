@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 20:22:14 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/29 20:18:10 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/09/02 20:01:02 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,9 @@ void	handle_status(int status, t_dongle *d1, t_dongle *d2)
 	{
 		pthread_mutex_unlock(&d1->lock);
 		pthread_cond_wait(&d2->cond, &d2->lock);
+
+		pthread_mutex_unlock(&d2->lock);
 		pthread_mutex_lock(&d1->lock);
+		pthread_mutex_lock(&d2->lock);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:29:52 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/30 20:11:49 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/09/02 10:35:39 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,17 @@ void	try_take_dongles(t_sim *sim, t_dongle *d1, t_dongle *d2, t_coder *c)
 	d2->in_use = true;
 	heap_extract_min(&d1->waiting);
 	heap_extract_min(&d2->waiting);
-	pthread_mutex_unlock(&d2->lock);
 	pthread_mutex_unlock(&d1->lock);
+	pthread_mutex_unlock(&d2->lock);
 	pthread_mutex_lock(&sim->state_lock);
 	condition = sim -> stop;
 	pthread_mutex_unlock(&sim->state_lock);
 	if (!condition)
 	{
 		pthread_mutex_lock(&sim->log_lock);
-		//pthread_mutex_lock(&sim->state_lock);
 		log_state(sim, c->id, "has taken a dongle");
 		log_state(sim, c->id, "has taken a dongle");
 		pthread_mutex_unlock(&sim->log_lock);
-		//pthread_mutex_unlock(&sim->state_lock);
 	}
 }
 
@@ -90,8 +88,8 @@ void	acquire_dognles(t_sim *sim, t_coder *c)
 	{
 		heap_remove(&d1->waiting, c->id);
 		heap_remove(&d2->waiting, c->id);
-		pthread_mutex_unlock(&d2->lock);
 		pthread_mutex_unlock(&d1->lock);
+		pthread_mutex_unlock(&d2->lock);
 		return ;
 	}
 	try_take_dongles(sim, d1, d2, c);

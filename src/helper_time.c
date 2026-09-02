@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:45 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/30 21:23:02 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/09/02 21:32:25 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ void	wait_on_dongle(t_sim *sim, t_dongle *d1, t_dongle *d2)
 	deadline = calculate_deadline(sim, target);
 	pthread_mutex_unlock(&released->lock);
 	pthread_cond_timedwait(&target->cond, &target->lock, &deadline);
+	// the new lines so you can defend the hellgring erurror
+	// i should reorder the lockiing and unlocking
 	pthread_mutex_lock(&released->lock);
 }
 
