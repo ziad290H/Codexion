@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:45 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/09/02 21:32:25 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/09/03 11:09:42 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,25 +48,30 @@ struct timespec	calculate_deadline(t_sim *sim, t_dongle *target)
 
 void	wait_on_dongle(t_sim *sim, t_dongle *d1, t_dongle *d2)
 {
+	int				variable;
 	struct timespec	deadline;
 	t_dongle		*released;
 	t_dongle		*target;
 
-	if (d1->available_at_ms >= d2->available_at_ms)
-	{
-		released = d2;
-		target = d1;
-	}
-	else
+	variable = 1;
+	released = d2;
+	target = d1;
+	if (d1->available_at_ms < d2->available_at_ms)
 	{
 		target = d2;
 		released = d1;
+		variable = 2;
 	}
 	deadline = calculate_deadline(sim, target);
 	pthread_mutex_unlock(&released->lock);
 	pthread_cond_timedwait(&target->cond, &target->lock, &deadline);
-	// the new lines so you can defend the hellgring erurror
-	// i should reorder the lockiing and unlocking
+	if (variable != 1)
+	{
+		pthread_mutex_unlock(&target->lock);
+		pthread_mutex_lock(&released->lock);
+		pthread_mutex_lock(&target->lock);
+		return ;
+	}
 	pthread_mutex_lock(&released->lock);
 }
 
@@ -85,12 +90,7 @@ void	smarte_sleep(t_sim *sim, long time)
 		else
 			sleep_ms = 10;
 		usleep(sleep_ms * 1000);
-		pthread_mutex_lock(&sim->state_lock);
-		if (sim->stop)
-		{
-			pthread_mutex_unlock(&sim->state_lock);
+		if (is_stoped(sim))
 			break ;
-		}
-		pthread_mutex_unlock(&sim->state_lock);
 	}
 }

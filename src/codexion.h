@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:30:27 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/08/31 15:42:01 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/09/03 11:17:11 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,10 +94,10 @@ void		acquire_dognles(t_sim *sim, t_coder *c);
 void		release_dongle(t_sim *sim, t_dongle *d);
 void		log_state(t_sim *sim, int coder_id, const char *msg);
 
-void		*monitor_routine(void *arg);
 bool		check_burnout(t_sim *sim);
 bool		check_all_compiled(t_sim *sim);
 
+void		*monitor_routine(void *arg);
 void		*coder_routine(void *arg);
 void		destroy_sim(t_sim *sim);
 
@@ -112,7 +112,6 @@ void		wait_on_dongle(t_sim *sim, t_dongle *released, t_dongle *target);
 bool		beginning(t_sim *s, t_coder *c);
 bool		is_start(t_sim *sim);
 bool		done_compiling(t_sim *s, t_coder *c);
-bool		is_stoped(t_sim *sim);
 
 bool		is_cooldown_active(t_dongle *d1, t_dongle *d2, long now);
 int			check_dongles(t_dongle *d1, t_dongle *d2);

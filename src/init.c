@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:31:00 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/09/02 11:26:11 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/09/03 10:21:11 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,6 @@ bool	init_sim(t_sim *sim, t_config *cfg)
 	{
 		destroy_sim(sim);
 		return (false);
-	}
-	int i = 0;
-	while (i < sim->cfg.num_coders)
-	{
-		printf("thred coder %d with a value adress of %p\n", i, (void *)&sim->dongles[i].lock);
-		i++;
 	}
 	return (true);
 }

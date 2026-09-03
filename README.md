@@ -83,7 +83,7 @@ All 8 arguments are mandatory. All time values are in milliseconds.
 - [Binary Heap — Wikipedia](https://en.wikipedia.org/wiki/Binary_heap)
  ### AI usage
 
-Claude (Anthropic) was used throughout this project for the following:
+AI was used throughout this project for the following:
 
 - **Concept explanation**: explaining POSIX thread primitives (`pthread_cond_wait`,
   `pthread_cond_timedwait`, mutex semantics, context switching internals) in depth,

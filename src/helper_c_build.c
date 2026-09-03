@@ -6,7 +6,7 @@
 /*   By: zdaouari <zdaouari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 14:29:52 by zdaouari          #+#    #+#             */
-/*   Updated: 2026/09/02 10:35:39 by zdaouari         ###   ########.fr       */
+/*   Updated: 2026/09/03 11:10:06 by zdaouari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,13 @@ void	wait_till_available(t_sim *sim, t_dongle *d1, t_dongle *d2, t_coder *c)
 
 void	try_take_dongles(t_sim *sim, t_dongle *d1, t_dongle *d2, t_coder *c)
 {
-	bool	condition;
-
 	d1->in_use = true;
 	d2->in_use = true;
 	heap_extract_min(&d1->waiting);
 	heap_extract_min(&d2->waiting);
 	pthread_mutex_unlock(&d1->lock);
 	pthread_mutex_unlock(&d2->lock);
-	pthread_mutex_lock(&sim->state_lock);
-	condition = sim -> stop;
-	pthread_mutex_unlock(&sim->state_lock);
-	if (!condition)
+	if (!is_stoped(sim))
 	{
 		pthread_mutex_lock(&sim->log_lock);
 		log_state(sim, c->id, "has taken a dongle");
