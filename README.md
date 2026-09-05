@@ -1,7 +1,9 @@
 *This project has been created as part of the 42 curriculum by zdaouari.*
 
 # Codexion
+While working on this project, I wrote a documentation covering all the concepts and theory needed to understand and master it.
 
+Feel free to check it out on my Medium page: [The World of Processes and Threads](https://medium.com/@ziaddaouari10/the-world-of-processes-and-threads-f16df48db14a?sharedUserId=ziaddaouari10)
 ## Description
 
 Codexion is a concurrency simulation written in C, inspired by the classic Dining
