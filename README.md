@@ -75,7 +75,7 @@ All 8 arguments are mandatory. All time values are in milliseconds.
 
 ## Resources
 
- -  most of concepts that I learned is from this book ["The Linux Programming inTerface"](https://www.bogotobogo.com/Linux/files/the-linux-programming-interface-1.pdf)
+ -  most of concepts that I learned is from this book ["TheLinux Programming inTerface"](https://www.bogotobogo.com/Linux/files/the-linux-programming-interface-1.pdf)
  - [how mutex works](https://www.youtube.com/watch?v=1tZhmTnk-vc)
  - [geeksforgeeks for theorics](https://www.geeksforgeeks.org/operating-systems/difference-between-process-and-thread/)
  - [Coffman Conditions — Wikipedia](https://en.wikipedia.org/wiki/Deadlock#Necessary_conditions)
@@ -98,7 +98,8 @@ The classic deadlock scenario: every coder holds one dongle and waits for the ot
 forming a circular chain where nobody can proceed. Codexion breaks the
 **circular wait** condition (one of Coffman's four necessary conditions) by enforcing
 
-- **locking the dongles with a mutex, making impossible for other to take it by force**
+- **locking the dongles with a <img width="1298" height="839" alt="image" src="https://github.com/user-attachments/assets/57d6f1c9-838c-42f0-925e-8a8ca5682d73" />
+mutex, making impossible for other to take it by force**
 
 - **sleeping all the coders with a even id number for a specific time in the begining**
 ```c
