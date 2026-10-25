@@ -98,7 +98,7 @@ The classic deadlock scenario: every coder holds one dongle and waits for the ot
 forming a circular chain where nobody can proceed. Codexion breaks the
 **circular wait** condition (one of Coffman's four necessary conditions) by enforcing
 
-- **locking the dongles with a <img width="1298" height="839" alt="image" src="https://github.com/user-attachments/assets/57d6f1c9-838c-42f0-925e-8a8ca5682d73" />
+- **locking the dongles with a
 mutex, making impossible for other to take it by force**
 
 - **sleeping all the coders with a even id number for a specific time in the begining**
